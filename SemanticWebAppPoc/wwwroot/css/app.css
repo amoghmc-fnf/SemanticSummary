@@ -1,5 +1,9 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0; /* Remove default body margin */
+    padding: 0; /* Remove default body padding */
+    width: 100%; /* Ensure the body takes full width */
+    height: 100%; /* Ensure the body takes full height */
 }
 
 h1:focus {
@@ -100,4 +104,57 @@ a, .btn-link {
 
 code {
     color: #c02d76;
+}
+
+.chat-container {
+    margin: 0 auto; /* Center the container */
+    width: 100%; /* Make sure the container takes full width */
+}
+
+.message-display {
+    border: 1px solid #ccc;
+    height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+    margin: 0 auto;
+    margin-bottom: 10px; /* Space between messages and input */
+    width: 100%; /* Make sure the container takes full width */
+}
+
+.input-container {
+    display: flex; /* Use flexbox to align items */
+    width: 100%; /* Make sure it takes the full width */
+}
+
+.message-input {
+    flex-grow: 1; /* Allow the input to grow and take available space */
+    padding: 5px; /* Add some padding for better appearance */
+    margin-right: 5px; /* Space between input and button */
+    width: 100%; /* Make sure the container takes full width */
+}
+
+.sent-message {
+    background-color: #d4edda; /* Light green background */
+    color: #155724; /* Dark green text color */
+    padding: 10px; /* Padding around the message */
+    border-radius: 5px; /* Rounded corners */
+    margin-bottom: 10px; /* Space between messages */
+    align-self: flex-end; /* Align the message to the right */
+    max-width: 100%;
+}
+
+.received-message {
+    background-color: #f8d7da; /* Light red background for received messages */
+    color: #721c24; /* Dark red text color */
+    padding: 10px; /* Padding around the message */
+    border-radius: 5px; /* Rounded corners */
+    margin-bottom: 10px; /* Space between messages */
+    align-self: flex-start; /* Align the message to the left */
+    max-width: 100%;
+}
+
+button {
+    padding: 5px 10px; /* Add some padding for better appearance */
+    margin-left: 5px; /* Space between buttons */
+    cursor: pointer; /* Change cursor to pointer on hover */
 }
