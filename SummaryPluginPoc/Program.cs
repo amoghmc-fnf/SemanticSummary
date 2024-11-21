@@ -24,6 +24,9 @@ var chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
 
 // Add a plugin
 kernel.Plugins.AddFromType<SettingsPlugin>("Settings");
+var settings = new SettingsPlugin();
+var summary = new SummaryPlugin(settings);
+kernel.Plugins.AddFromObject(summary);
 
 // Enable planning
 OpenAIPromptExecutionSettings openAIPromptExecutionSettings = new()
@@ -42,7 +45,6 @@ do
     Console.Write("User > ");
     userInput = Console.ReadLine();
 
-    // Add user input
     history.AddUserMessage(userInput);
 
     // Get the response from the AI

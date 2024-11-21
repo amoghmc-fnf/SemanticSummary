@@ -11,9 +11,9 @@ public class SettingsPlugin
     public SettingsPlugin()
     {
         topic = Topic.Generic;
-        promptLength = 100;
+        promptLength = 10;
     }
-
+    
     [KernelFunction("get_topic")]
     [Description("Gets the topic name for the summary")]
     [return: Description("Topic name")]
@@ -30,7 +30,7 @@ public class SettingsPlugin
     }
 
     [KernelFunction("get_length")]
-    [Description("Gets the maximum char length count for the LLM to output for the summary")]
+    [Description("Gets the maximum word count for the LLM to output for the summary")]
     [return: Description("Output length")]
     public int GetPromptLength()
     {
@@ -38,7 +38,7 @@ public class SettingsPlugin
     }
 
     [KernelFunction("set_length")]
-    [Description("Sets the maximum char length count for the LLM to output for the summary")]
+    [Description("Sets the maximum word count for the LLM to output for the summary")]
     public void SetPromptLength(int newPromptLength)
     {
         promptLength = newPromptLength;
