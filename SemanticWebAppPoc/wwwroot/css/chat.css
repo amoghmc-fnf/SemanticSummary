@@ -1,0 +1,26 @@
+﻿.chat-container {
+    width: 300px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.chat-messages {
+    height: 200px;
+    overflow-y: scroll;
+}
+
+.message {
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+.message-user {
+    background-color: #eee;
+    text-align: right;
+}
+
+.message-other {
+    background-color: #f0f0f0;
+    text-align: left;
+}
