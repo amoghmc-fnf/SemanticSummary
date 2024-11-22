@@ -21,7 +21,7 @@ a, .btn-link {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {
@@ -141,6 +141,7 @@ code {
     margin-bottom: 10px; /* Space between messages */
     align-self: flex-end; /* Align the message to the right */
     max-width: 100%;
+    text-align: right;
 }
 
 .received-message {
@@ -151,10 +152,27 @@ code {
     margin-bottom: 10px; /* Space between messages */
     align-self: flex-start; /* Align the message to the left */
     max-width: 100%;
+    text-align: left;
 }
 
 button {
     padding: 5px 10px; /* Add some padding for better appearance */
     margin-left: 5px; /* Space between buttons */
     cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+.settings-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.left-group {
+    display: flex;
+    gap: 20px; /* Adjust the gap as needed */
+}
+
+.right-group {
+    display: flex;
+    gap: 20px; /* Adjust the gap as needed */
+    margin-left: auto; /* Pushes the right group to the far right */
 }
