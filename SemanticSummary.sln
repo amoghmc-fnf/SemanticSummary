@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticSummary", "Semantic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SummaryPluginPoc", "SummaryPluginPoc\SummaryPluginPoc.csproj", "{163C068B-2E53-4061-9942-B0CC3B68C884}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SemanticWebAppPoc", "SemanticWebAppPoc\SemanticWebAppPoc.csproj", "{7AEE3198-3846-4DF0-9C37-7B7C70C013EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticWebAppPoc", "SemanticWebAppPoc\SemanticWebAppPoc.csproj", "{7AEE3198-3846-4DF0-9C37-7B7C70C013EB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorAppWebAssembly", "..\BlazorApp1\BlazorAppWebAssembly\BlazorAppWebAssembly.csproj", "{D077F2EA-5923-431D-9990-6DEE16966979}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{7AEE3198-3846-4DF0-9C37-7B7C70C013EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AEE3198-3846-4DF0-9C37-7B7C70C013EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AEE3198-3846-4DF0-9C37-7B7C70C013EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D077F2EA-5923-431D-9990-6DEE16966979}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D077F2EA-5923-431D-9990-6DEE16966979}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D077F2EA-5923-431D-9990-6DEE16966979}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D077F2EA-5923-431D-9990-6DEE16966979}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

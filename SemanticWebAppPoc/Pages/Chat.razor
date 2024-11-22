@@ -1,10 +1,23 @@
-﻿@page "/chat"
+﻿@page "/"
 
 <PageTitle>Summarize</PageTitle>
 
 <h1>Welcome to the summary app!</h1>
 
 <div class="chat-container">
+    <div class="input-labels-container">
+        <div class="input-label-container">
+            <label for="lengthLabel">Prompt Length:</label>
+            <InputNumber min="0" max="100" @bind-Value="lengthBox" id="lengthBoxId" class="side-by-side-input" />
+            <label for="topicLabel">Topic Label:</label>
+            <InputSelect @bind-Value="topicSelect" id="topicSelectId">
+                @foreach (var opt in Enum.GetValues(typeof(Topic)))
+                {
+                    <option>@opt</option>
+                }
+            </InputSelect>
+        </div>
+    </div>
     <div class="message-display">
         @foreach (var message in messages)
         {
@@ -26,9 +39,16 @@
 </div>
 
 @code {
+    private int lengthBox; 
     private string userMessage;
     private List<Message> messages = new List<Message>();
     private string lastMessage; // Track the last sent message
+    private Topic topicSelect;
+
+    private enum Topic
+    {
+        Generic, Development, Marketing, Legal
+    }
 
     private void SendMessage()
     {
