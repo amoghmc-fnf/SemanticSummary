@@ -37,7 +37,7 @@
                     @message.Text
                     <hr>
                     <div class="left-group">
-                        <button class="btn btn-secondary" @onclick="RegenerateLastMessage">Regenerate</button>
+                        <button class="btn btn-secondary" @onclick="() => RegenerateLastMessage(message.Text)">Regenerate</button>
                         <p class="right-group">@DateTime.Now</p>
                     </div>
                 </div>
@@ -62,7 +62,6 @@
     private int tokenRange;
     private string userMessage = string.Empty;
     private List<Message> messages = new List<Message>();
-    private string lastMessage; // Track the last sent message
     private Topic topicSelect;
     private int messageCount = 0;
 
@@ -84,7 +83,6 @@
         {
             messages.Add(new Message { Text = userMessage + tokenRange.ToString(), IsSent = true });
             messages.Add(new Message { Text = userMessage, IsSent = false });
-            lastMessage = userMessage; // Store the last sent message
             userMessage = string.Empty; // Clear the input after sending
         }
     }
@@ -94,12 +92,12 @@
         SendMessage();
     }
 
-    private void RegenerateLastMessage()
+    private void RegenerateLastMessage(string text)
     {
         if (messages.Count > 0) // Check if there are messages to regenerate
         {
             messages.RemoveAt(messages.Count - 1); // Remove the last message
-            userMessage = lastMessage; // Set the input to the last message
+            userMessage = text; // Set the input to the last message
         }
     }
 
