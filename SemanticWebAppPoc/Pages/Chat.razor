@@ -64,6 +64,12 @@
     private List<Message> messages = new List<Message>();
     private Topic topicSelect;
     private int messageCount = 0;
+    private Tokenizer tokenizer;
+
+    protected override void OnInitialized()
+    {
+        tokenizer = TiktokenTokenizer.CreateForModel("gpt-4o-mini");
+    }
 
     private enum Topic
     {
@@ -73,7 +79,6 @@
     private void GetLiveCount(ChangeEventArgs changeEvent)
     {
         userMessage = changeEvent.Value.ToString();
-        var tokenizer = TiktokenTokenizer.CreateForModel("gpt-4o-mini");
         messageCount = tokenizer.CountTokens(userMessage);
     }
 
