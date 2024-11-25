@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using Microsoft.ML.Tokenizers
 
 <PageTitle>Summarize</PageTitle>
 
@@ -34,24 +35,34 @@
         <DataAnnotationsValidator />
         <ValidationSummary />
         <div class="input-container">
-            <InputText @bind-Value="userMessage" placeholder="Type your message..." class="message-input" />
+            <InputText @bind-Value="userMessage" @oninput="GetLiveCount" placeholder="Type your message..." class="message-input" />
             <button type="submit" class="btn btn-primary">Send</button>
             <button type="button" class="btn btn-primary" @onclick="RegenerateLastMessage">Regenerate</button>
         </div>
     </EditForm>
+    <div>
+        Input token count: @messageCount
+    </div>
 </div>
 
 @code {
-    private int rangeValue;
     private int tokenRange;
-    private string userMessage;
+    private string userMessage = string.Empty;
     private List<Message> messages = new List<Message>();
     private string lastMessage; // Track the last sent message
     private Topic topicSelect;
+    private int messageCount = 0;
 
     private enum Topic
     {
         Generic, Development, Marketing, Legal
+    }
+
+    private void GetLiveCount(ChangeEventArgs changeEvent)
+    {
+        userMessage = changeEvent.Value.ToString();
+        var tokenizer = TiktokenTokenizer.CreateForModel("gpt-4o-mini");
+        messageCount = tokenizer.CountTokens(userMessage);
     }
 
     private void SendMessage()
