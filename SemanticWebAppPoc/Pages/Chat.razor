@@ -38,6 +38,9 @@
                     <hr>
                     <div class="left-group">
                         <button class="btn btn-secondary" @onclick="() => RegenerateLastMessage(message.Text)">Regenerate</button>
+                        <button class="btn btn-secondary">&lt</button>
+                        <button class="btn btn-light" disabled="true">1 / @messages.Count</button>
+                        <button class="btn btn-secondary">&gt</button>
                         <p class="right-group">@DateTime.Now</p>
                     </div>
                 </div>
@@ -68,7 +71,7 @@
 
     protected override void OnInitialized()
     {
-        tokenizer = TiktokenTokenizer.CreateForModel("gpt-4o-mini");
+        // tokenizer = TiktokenTokenizer.CreateForModel("gpt-4o-mini");
     }
 
     private enum Topic
@@ -79,7 +82,7 @@
     private void GetLiveCount(ChangeEventArgs changeEvent)
     {
         userMessage = changeEvent.Value.ToString();
-        messageCount = tokenizer.CountTokens(userMessage);
+        // messageCount = tokenizer.CountTokens(userMessage);
     }
 
     private void SendMessage()
