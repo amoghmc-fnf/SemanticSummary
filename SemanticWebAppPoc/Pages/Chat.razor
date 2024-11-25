@@ -25,9 +25,23 @@
     <div class="message-display">
         @foreach (var message in messages)
         {
-            <div class="@((message.IsSent ? "sent-message" : "received-message"))">
-                @message.Text
-            </div>
+            if (message.IsSent)
+            {
+                <div class="sent-message">
+                    @message.Text
+                </div>
+            }
+            else
+            {
+                <div class="received-message">
+                    @message.Text
+                    <hr>
+                    <div class="left-group">
+                        <button class="btn btn-secondary" @onclick="RegenerateLastMessage">Regenerate</button>
+                        <p class="right-group">@DateTime.Now</p>
+                    </div>
+                </div>
+            }
         }
     </div>
 
@@ -37,7 +51,6 @@
         <div class="input-container">
             <InputText @bind-Value="userMessage" @oninput="GetLiveCount" placeholder="Type your message..." class="message-input" />
             <button type="submit" class="btn btn-primary">Send</button>
-            <button type="button" class="btn btn-primary" @onclick="RegenerateLastMessage">Regenerate</button>
         </div>
     </EditForm>
     <div>
