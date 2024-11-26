@@ -40,9 +40,9 @@
                         <button class="btn btn-secondary" @onclick="() => RegenerateLastMessage(message)">&#8635;</button>
                         @if (message.Texts.Count > 1)
                         {
-                        <button class="btn btn-secondary" @onclick="() => PrevPage(message)">&lt</button>
+                            <button class="btn btn-secondary" @onclick="() => PrevPage(message)">&lt</button>
                             <button class="btn btn-light" disabled="true">@(@message.currIndex + 1) / @message.Texts.Count</button>
-                        <button class="btn btn-secondary" @onclick="() => NextPage(message)">&gt</button>
+                            <button class="btn btn-secondary" @onclick="() => NextPage(message)">&gt</button>
                         }
                         <p class="right-group">@DateTime.Now</p>
                     </div>
