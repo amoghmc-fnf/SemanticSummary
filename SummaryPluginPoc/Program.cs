@@ -24,9 +24,9 @@ var chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
 
 // Add a plugin
 kernel.Plugins.AddFromType<SettingsPlugin>(pluginName : "Settings");
-var settings = new SettingsPlugin();
-var summary = new SummaryPlugin(settings);
-kernel.Plugins.AddFromObject(summary, pluginName : "Summary");
+//var settings = new SettingsPlugin();
+//var summary = new SummaryPlugin(settings);
+//kernel.Plugins.AddFromObject(summary, pluginName : "Summary");
 
 // Enable planning
 OpenAIPromptExecutionSettings openAIPromptExecutionSettings = new()
@@ -56,8 +56,10 @@ do
     // Print the results
     Console.WriteLine("Assistant > " + result);
     var getTopic = kernel.Plugins.GetFunction("Settings", "get_topic");
-    var val = await kernel.InvokeAsync(getTopic);
-    Console.WriteLine("Kernel Settings > " + val);
+    var getLength = kernel.Plugins.GetFunction("Settings", "get_length");
+    var topic = await kernel.InvokeAsync(getTopic);
+    var length = await kernel.InvokeAsync(getLength);
+    Console.WriteLine("Kernel Settings > " + topic + "\t" + length);
 
     // Add the message from the agent to the chat history
     history.AddMessage(result.Role, result.Content ?? string.Empty);
