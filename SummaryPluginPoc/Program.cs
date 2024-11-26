@@ -61,6 +61,17 @@ do
     var length = await kernel.InvokeAsync(getLength);
     Console.WriteLine("Kernel Settings > " + topic + "\t" + length);
 
+    var setTopic = kernel.Plugins.GetFunction("Settings", "set_topic");
+    var setLength = kernel.Plugins.GetFunction("Settings", "set_length");
+    var setTopicArgs = new KernelArguments();
+    var setLengthArgs = new KernelArguments();
+    setTopicArgs.Add("newTopic", Topic.Development);
+    setLengthArgs.Add("newPromptLength", 47);
+    //await kernel.InvokeAsync(setTopic, setTopicArgs);
+    await kernel.InvokeAsync(setLength, setLengthArgs);
+    //Console.WriteLine("Kernel Settings after Changing > " + topic + "\t" + length);
+
+
     // Add the message from the agent to the chat history
     history.AddMessage(result.Role, result.Content ?? string.Empty);
 } while (userInput is not null);
