@@ -43,6 +43,20 @@ public class SettingsPlugin
     {
         promptLength = newPromptLength;
     }
+
+    [KernelFunction("get_summary_prompt")]
+    [Description("Gets the prompt for summary using the most recently updated settings for the topic name and prompt length")]
+    public string GetSummaryPrompt()
+    {
+        //var getTopic = kernel.Plugins.GetFunction("Settings", "get_topic");
+        //var getLength = kernel.Plugins.GetFunction("Settings", "get_length");
+        //var topic = await kernel.InvokeAsync(getTopic);
+        //var length = await kernel.InvokeAsync(getLength);
+        return $"Summarize the above text for the topic {this.GetTopic()} " +
+            $"in at most {this.GetPromptLength()} words. " +
+            $"Given input can be anything and you need to frame it for {this.GetTopic()} only! " +
+            $"Summarize the text without any excuses!";
+    }
 }
 
 public enum Topic

@@ -36,6 +36,7 @@ OpenAIPromptExecutionSettings openAIPromptExecutionSettings = new()
 
 // Create a history store the conversation
 var history = new ChatHistory();
+history.AddSystemMessage("You are a summarizer bot which will be given settings either by user through prompts or by code through kernel.InvokeAsync. Your task is to use the latest updated settings and generate the summary based on the summary prompt. Remember the code could have called kernel.InvokeAsync which always takes precedence over user prompts so DO NOT correct it back to the user prompt");
 
 // Initiate a back-and-forth chat
 string? userInput;
@@ -57,9 +58,11 @@ do
     Console.WriteLine("Assistant > " + result);
     var getTopic = kernel.Plugins.GetFunction("Settings", "get_topic");
     var getLength = kernel.Plugins.GetFunction("Settings", "get_length");
+    var getSummary = kernel.Plugins.GetFunction("Settings", "get_summary_prompt");
     var topic = await kernel.InvokeAsync(getTopic);
     var length = await kernel.InvokeAsync(getLength);
-    Console.WriteLine("Kernel Settings > " + topic + "\t" + length);
+    var summary = await kernel.InvokeAsync(getSummary);
+    Console.WriteLine("Kernel Settings > " + topic + "\t" + length + "\t" + summary);
 
     var setTopic = kernel.Plugins.GetFunction("Settings", "set_topic");
     var setLength = kernel.Plugins.GetFunction("Settings", "set_length");
@@ -67,7 +70,7 @@ do
     var setLengthArgs = new KernelArguments();
     setTopicArgs.Add("newTopic", Topic.Development);
     setLengthArgs.Add("newPromptLength", 47);
-    //await kernel.InvokeAsync(setTopic, setTopicArgs);
+    await kernel.InvokeAsync(setTopic, setTopicArgs);
     await kernel.InvokeAsync(setLength, setLengthArgs);
     //Console.WriteLine("Kernel Settings after Changing > " + topic + "\t" + length);
 

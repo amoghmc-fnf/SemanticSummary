@@ -10,7 +10,7 @@ namespace SummaryPluginPoc;
 
 public class SummaryPlugin
 {
-    public SettingsPlugin settings;
+    private SettingsPlugin settings;
 
     public SummaryPlugin(SettingsPlugin settings)
     {
