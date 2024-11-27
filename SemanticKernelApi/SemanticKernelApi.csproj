@@ -12,4 +12,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Plugins">
+      <HintPath>..\Plugins\bin\Release\net8.0\Plugins.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
