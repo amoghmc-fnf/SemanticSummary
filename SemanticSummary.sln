@@ -19,7 +19,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminApi", "..\WebApplicati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminModel", "..\WebApplication1\AdminDll\AdminModel.csproj", "{68854DEF-7602-4B28-8DFA-9B8833CF720C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugins", "Plugins\Plugins.csproj", "{0B1347B9-ABA3-4C25-BB13-C5EE5FAC54C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugins", "Plugins\Plugins.csproj", "{0B1347B9-ABA3-4C25-BB13-C5EE5FAC54C7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminApp", "..\WebApplication1\AdminApp\AdminApp.csproj", "{D2151F77-AAC1-4670-9A27-AC4ACBC7192D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SummaryWebApp", "SummaryWebApp\SummaryWebApp.csproj", "{59C9B70D-232C-450C-A43C-4B0BE4A49704}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyClientApp", "..\WebApplication1\ClientApp\MyClientApp.csproj", "{08D5ED01-CA36-4B23-8929-6700E4288546}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +69,18 @@ Global
 		{0B1347B9-ABA3-4C25-BB13-C5EE5FAC54C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B1347B9-ABA3-4C25-BB13-C5EE5FAC54C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B1347B9-ABA3-4C25-BB13-C5EE5FAC54C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2151F77-AAC1-4670-9A27-AC4ACBC7192D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2151F77-AAC1-4670-9A27-AC4ACBC7192D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2151F77-AAC1-4670-9A27-AC4ACBC7192D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2151F77-AAC1-4670-9A27-AC4ACBC7192D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59C9B70D-232C-450C-A43C-4B0BE4A49704}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59C9B70D-232C-450C-A43C-4B0BE4A49704}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59C9B70D-232C-450C-A43C-4B0BE4A49704}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59C9B70D-232C-450C-A43C-4B0BE4A49704}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08D5ED01-CA36-4B23-8929-6700E4288546}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08D5ED01-CA36-4B23-8929-6700E4288546}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08D5ED01-CA36-4B23-8929-6700E4288546}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08D5ED01-CA36-4B23-8929-6700E4288546}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

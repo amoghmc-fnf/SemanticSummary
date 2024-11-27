@@ -24,7 +24,7 @@ namespace SemanticKernelApi.Controllers
             _chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
         }
 
-        [HttpPost("chat")]
+        [HttpPost("summary")]
         public async Task<IActionResult> Chat([FromBody] string userInput)
         {
             _history.AddUserMessage(userInput);
@@ -60,7 +60,7 @@ namespace SemanticKernelApi.Controllers
         }
 
         [HttpPost("settings/topic")]
-        public async Task<IActionResult> UpdateTopic([FromBody] string newTopic)
+        public async Task<IActionResult> UpdateTopic(Topic newTopic)
         {
             var setTopic = _kernel.Plugins.GetFunction("Settings", "set_topic");
             var setTopicArgs = new KernelArguments();
@@ -81,7 +81,7 @@ namespace SemanticKernelApi.Controllers
         }
 
         [HttpPost("settings/promptLength")]
-        public async Task<IActionResult> UpdatePromptLength([FromBody] int newPromptLength)
+        public async Task<IActionResult> UpdatePromptLength(int newPromptLength)
         {
             var setLength = _kernel.Plugins.GetFunction("Settings", "set_length");
             var setLengthArgs = new KernelArguments();

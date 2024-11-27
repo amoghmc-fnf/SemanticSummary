@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using SemanticWebAppPoc.Services;
 
-namespace SemanticWebAppPoc
+namespace SummaryWebApp
 {
     public class Program
     {
@@ -12,11 +11,7 @@ namespace SemanticWebAppPoc
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
-            builder.Services.AddTransient(sp => new HttpClient
-            {
-                BaseAddress = new Uri("http://localhost:5129/api/")
-            });
-            builder.Services.AddScoped<IChatService, ChatService>();
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
             await builder.Build().RunAsync();
         }
