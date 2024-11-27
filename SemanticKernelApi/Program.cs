@@ -8,6 +8,7 @@ namespace SemanticKernelApi
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            ConfigureCors(builder);
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -23,12 +24,24 @@ namespace SemanticKernelApi
                 app.UseSwaggerUI();
             }
 
+            app.UseCors("cors");
+            app.UseAuthentication();
             app.UseAuthorization();
-
-
             app.MapControllers();
-
             app.Run();
+        }
+
+        private static void ConfigureCors(WebApplicationBuilder builder)
+        {
+            builder.Services.AddCors(setUpAction =>
+            {
+                setUpAction.AddPolicy("cors", policy =>
+                {
+                    policy.AllowAnyHeader();
+                    policy.AllowAnyMethod();
+                    policy.AllowAnyOrigin();
+                });
+            });
         }
     }
 }
