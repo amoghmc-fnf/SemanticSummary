@@ -61,5 +61,5 @@ public class SettingsPlugin
 
 public enum Topic
 {
-    Generic, Development, Marketing, Legal
+    Generic, Development, Marketing, Legal, Comedy
 }

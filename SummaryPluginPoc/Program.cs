@@ -68,8 +68,8 @@ do
     var setLength = kernel.Plugins.GetFunction("Settings", "set_length");
     var setTopicArgs = new KernelArguments();
     var setLengthArgs = new KernelArguments();
-    setTopicArgs.Add("newTopic", Topic.Development);
-    setLengthArgs.Add("newPromptLength", 47);
+    setTopicArgs.Add("newTopic", Topic.Comedy);
+    setLengthArgs.Add("newPromptLength", 69);
     await kernel.InvokeAsync(setTopic, setTopicArgs);
     await kernel.InvokeAsync(setLength, setLengthArgs);
     //Console.WriteLine("Kernel Settings after Changing > " + topic + "\t" + length);
