@@ -2,6 +2,7 @@
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Plugins;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -47,6 +48,48 @@ namespace SemanticKernelApi.Controllers
             var summary = await _kernel.InvokeAsync(getSummary);
             Console.WriteLine("Kernel Settings > " + topic + "\t" + length + "\t" + summary);
             return Ok(result.Content);
+        }
+
+        [HttpGet("settings/topic")]
+        public async Task<IActionResult> GetTopic()
+        {
+            var getTopic = _kernel.Plugins.GetFunction("Settings", "get_topic");
+            var topic = await _kernel.InvokeAsync(getTopic);
+
+            return Ok(topic.ToString());
+        }
+
+        [HttpPost("settings/topic")]
+        public async Task<IActionResult> UpdateTopic([FromBody] string newTopic)
+        {
+            var setTopic = _kernel.Plugins.GetFunction("Settings", "set_topic");
+            var setTopicArgs = new KernelArguments();
+            setTopicArgs.Add("newTopic", newTopic);
+
+            await _kernel.InvokeAsync(setTopic, setTopicArgs);
+
+            return Ok("Topic updated successfully");
+        }
+
+        [HttpGet("settings/promptLength")]
+        public async Task<IActionResult> GetPromptLength()
+        {
+            var getLength = _kernel.Plugins.GetFunction("Settings", "get_length");
+            var length = await _kernel.InvokeAsync(getLength);
+
+            return Ok(length.ToString());
+        }
+
+        [HttpPost("settings/promptLength")]
+        public async Task<IActionResult> UpdatePromptLength([FromBody] int newPromptLength)
+        {
+            var setLength = _kernel.Plugins.GetFunction("Settings", "set_length");
+            var setLengthArgs = new KernelArguments();
+            setLengthArgs.Add("newPromptLength", newPromptLength);
+
+            await _kernel.InvokeAsync(setLength, setLengthArgs);
+
+            return Ok("Prompt length updated successfully");
         }
 
     }
