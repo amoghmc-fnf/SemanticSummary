@@ -1,3 +1,5 @@
+using Microsoft.SemanticKernel;
+using Plugins;
 
 namespace SemanticKernelApi
 {
@@ -9,6 +11,25 @@ namespace SemanticKernelApi
 
             // Add services to the container.
             ConfigureCors(builder);
+
+            IConfigurationRoot config = new ConfigurationBuilder()
+            .AddUserSecrets<Program>()
+            .Build();
+
+            // Create a kernel with Azure OpenAI chat completion
+            builder.Services.AddSingleton(sp =>
+            {
+                var kernelBuilder = Kernel.CreateBuilder();
+                kernelBuilder.AddAzureOpenAIChatCompletion(
+                    config["DeploymentName"],
+                    config["Endpoint"],
+                    config["Key"]);
+
+                // Add the SettingsPlugin
+                kernelBuilder.Plugins.AddFromType<SettingsPlugin>(pluginName: "Settings");
+
+                return kernelBuilder.Build();
+            });
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
