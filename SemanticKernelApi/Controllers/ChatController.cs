@@ -71,7 +71,7 @@ namespace SemanticKernelApi.Controllers
         }
 
         [HttpPost("settings/topic")]
-        public async Task<IActionResult> UpdateTopic(Topic newTopic)
+        public async Task<IActionResult> UpdateTopic([FromBody] Topic newTopic)
         {
             var setTopic = _kernel.Plugins.GetFunction("Settings", "set_topic");
             var setTopicArgs = new KernelArguments();
@@ -79,6 +79,9 @@ namespace SemanticKernelApi.Controllers
 
             await _kernel.InvokeAsync(setTopic, setTopicArgs);
 
+            var getTopic = _kernel.Plugins.GetFunction("Settings", "get_topic");
+            var topic = await _kernel.InvokeAsync(getTopic);
+            Console.WriteLine("Topic setting > " + newTopic +topic);
             return Ok("Topic updated successfully");
         }
 
@@ -92,7 +95,7 @@ namespace SemanticKernelApi.Controllers
         }
 
         [HttpPost("settings/promptLength")]
-        public async Task<IActionResult> UpdatePromptLength(int newPromptLength)
+        public async Task<IActionResult> UpdatePromptLength([FromBody] int newPromptLength)
         {
             var setLength = _kernel.Plugins.GetFunction("Settings", "set_length");
             var setLengthArgs = new KernelArguments();
@@ -100,6 +103,9 @@ namespace SemanticKernelApi.Controllers
 
             await _kernel.InvokeAsync(setLength, setLengthArgs);
 
+            var getLength = _kernel.Plugins.GetFunction("Settings", "get_length");
+            var length = await _kernel.InvokeAsync(getLength);
+            Console.WriteLine("Len setting > " + newPromptLength + length);
             return Ok("Prompt length updated successfully");
         }
 
