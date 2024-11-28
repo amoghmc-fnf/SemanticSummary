@@ -1,7 +1,8 @@
 ﻿@page "/"
-@using Plugins
-@using SummaryWebApp.Services
-@inject IChatService chatService
+@using Plugins;
+@using Microsoft.ML.Tokenizers;
+@using SummaryWebApp.Services;
+@inject IChatService chatService;
 
 <PageTitle>Summarize</PageTitle>
 
@@ -62,7 +63,7 @@
         </div>
     </EditForm>
     <div>
-        Input token count: @messageCount
+        Input token count: @inputTokenCount
     </div>
 </div>
 
@@ -71,7 +72,8 @@
     private string userMessage = string.Empty;
     private List<Message> messages = new List<Message>();
     private Topic topicSelect;
-    private int messageCount = 0;
+    private Tokenizer tokenizer;
+    private int inputTokenCount = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -82,7 +84,7 @@
     private void GetLiveCount(ChangeEventArgs changeEvent)
     {
         userMessage = changeEvent.Value.ToString();
-        // messageCount = tokenizer.CountTokens(userMessage);
+        // inputTokenCount = tokenizer.CountTokens(userMessage);
     }
 
     private async void SendMessage()
