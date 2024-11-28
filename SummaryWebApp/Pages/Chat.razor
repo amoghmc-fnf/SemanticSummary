@@ -3,6 +3,7 @@
 @using Microsoft.ML.Tokenizers;
 @using SummaryWebApp.Services;
 @inject IChatService chatService;
+@inject ITokenizerService tokenizerService;
 
 <PageTitle>Summarize</PageTitle>
 
@@ -72,19 +73,17 @@
     private string userMessage = string.Empty;
     private List<Message> messages = new List<Message>();
     private Topic topicSelect;
-    private Tokenizer tokenizer;
     private int inputTokenCount = 0;
 
     protected override async Task OnInitializedAsync()
     {
         outputLen = 20;
-        // tokenizer = TiktokenTokenizer.CreateForModel("gpt-4o-mini");
     }
 
-    private void GetLiveCount(ChangeEventArgs changeEvent)
+    private async void GetLiveCount(ChangeEventArgs changeEvent)
     {
         userMessage = changeEvent.Value.ToString();
-        // inputTokenCount = tokenizer.CountTokens(userMessage);
+        inputTokenCount = await tokenizerService.GetTokenCountAsync(userMessage);
     }
 
     private async void SendMessage()

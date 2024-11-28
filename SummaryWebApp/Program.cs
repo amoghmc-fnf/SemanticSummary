@@ -17,6 +17,7 @@ namespace SummaryWebApp
                 BaseAddress = new Uri("http://localhost:5129/api/")
             });
             builder.Services.AddScoped<IChatService, ChatService>();
+            builder.Services.AddScoped<ITokenizerService, TokenizerService>();
 
             await builder.Build().RunAsync();
         }
