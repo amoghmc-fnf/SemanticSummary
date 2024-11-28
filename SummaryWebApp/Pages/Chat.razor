@@ -1,0 +1,138 @@
+﻿@page "/"
+@using Plugins
+@using SummaryWebApp.Services
+@inject IChatService chatService
+
+<PageTitle>Summarize</PageTitle>
+
+<h1>Welcome to the summary app!</h1>
+
+<div class="chat-container">
+    <div class="settings-container">
+        <div class="left-group">
+            <label for="tokenLabel">Max Output Length</label>
+            <input type="range" min="10" max="200" id="outputLenId" @bind="outputLen">
+            <span>@outputLen</span>
+        </div>
+        <div class="right-group">
+            <label for="topicLabel">Topic Name</label>
+            <InputSelect @bind-Value="topicSelect" id="topicSelectId">
+                @foreach (var opt in Enum.GetValues(typeof(Topic)))
+                {
+                    <option>@opt</option>
+                }
+            </InputSelect>
+        </div>
+    </div>
+    <div class="message-display">
+        @foreach (var message in messages)
+        {
+            if (message.IsSent)
+            {
+                <div class="sent-message">
+                    @message.Text
+                </div>
+            }
+            else
+            {
+                <div class="received-message">
+                    @message.Texts[message.currIndex]
+                    <hr>
+                    <div class="left-group">
+                        <button class="btn btn-secondary" @onclick="() => RegenerateLastMessage(message)">&#8635;</button>
+                        @if (message.Texts.Count > 1)
+                        {
+                            <button class="btn btn-secondary" @onclick="() => PrevPage(message)">&lt</button>
+                            <button class="btn btn-light" disabled="true">@(@message.currIndex + 1) / @message.Texts.Count</button>
+                            <button class="btn btn-secondary" @onclick="() => NextPage(message)">&gt</button>
+                        }
+                        <p class="right-group">@DateTime.Now</p>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <EditForm Model="this" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="input-container">
+            <InputText @bind-Value="userMessage" @oninput="GetLiveCount" placeholder="Type your message..." class="message-input" />
+            <button type="submit" class="btn btn-primary">Send</button>
+        </div>
+    </EditForm>
+    <div>
+        Input token count: @messageCount
+    </div>
+</div>
+
+@code {
+    private int outputLen;
+    private string userMessage = string.Empty;
+    private List<Message> messages = new List<Message>();
+    private Topic topicSelect;
+    private int messageCount = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        outputLen = 20;
+        // tokenizer = TiktokenTokenizer.CreateForModel("gpt-4o-mini");
+    }
+
+    private void GetLiveCount(ChangeEventArgs changeEvent)
+    {
+        userMessage = changeEvent.Value.ToString();
+        // messageCount = tokenizer.CountTokens(userMessage);
+    }
+
+    private async void SendMessage()
+    {
+        if (!string.IsNullOrWhiteSpace(userMessage))
+        {
+            await chatService.UpdateTopicAsync(topicSelect);
+            await chatService.UpdatePromptLengthAsync(outputLen);
+            var response = await chatService.GetChatAsync(userMessage);
+            messages.Add(new Message { Text = userMessage, IsSent = true });
+            messages.Add(new Message { Text = userMessage, IsSent = false, Texts = [response] });
+            userMessage = string.Empty; // Clear the input after sending
+            topicSelect = await chatService.GetTopicAsync();
+            outputLen = await chatService.GetPromptLengthAsync();
+            StateHasChanged();
+        }
+    }
+
+    private void HandleValidSubmit()
+    {
+        SendMessage();
+    }
+
+    private void RegenerateLastMessage(Message message)
+    {
+        message.Texts.Add("Regenerated msg " + message.Texts.Count + "\n" + message.Text);
+    }
+
+    private void PrevPage(Message message)
+    {
+        if (message.currIndex > 0)
+        {
+            message.currIndex -= 1;
+        }
+    }
+
+    private void NextPage(Message message)
+    {
+        if (message.currIndex < message.Texts.Count - 1)
+        {
+            message.currIndex += 1;
+        }
+    }
+
+    public class Message
+    {
+        public string? Text { get; set; }
+        public bool IsSent { get; set; }
+        public List<string> Texts { get; set; } = [];
+        public int currIndex { get; set; } = 0;
+    }
+}
+

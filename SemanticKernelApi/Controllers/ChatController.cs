@@ -31,7 +31,7 @@ namespace SemanticKernelApi.Controllers
         {
             _kernel = kernel;
             _history = new ChatHistory();
-            _history.AddSystemMessage("You are a summarizer bot which will be given settings either by user through prompts or by code through kernel.InvokeAsync. Your task is to use the latest updated settings and generate the summary based on the summary prompt. Remember the code could have called kernel.InvokeAsync which always takes precedence over user prompts so DO NOT correct it back to the user prompt");
+            _history.AddSystemMessage("You are a summarizer bot which will be given settings either by user through prompts or by code through semantic kernel. Your task is to use the latest updated settings and generate the summary based on the summary prompt. Remember the code could have called through semantic kernel which always takes precedence over user prompts so never cache the settings and always refetch the latest settings using kernel functions only");
             _chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
         }
 

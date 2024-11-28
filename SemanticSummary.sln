@@ -3,15 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticSummary", "SemanticSummary\SemanticSummary.csproj", "{D3DA084B-F6E6-4758-AD84-374B4371AB2E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SummaryPluginPoc", "SummaryPluginPoc\SummaryPluginPoc.csproj", "{163C068B-2E53-4061-9942-B0CC3B68C884}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticWebAppPoc", "SemanticWebAppPoc\SemanticWebAppPoc.csproj", "{7AEE3198-3846-4DF0-9C37-7B7C70C013EB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorAppWebAssembly", "..\BlazorApp1\BlazorAppWebAssembly\BlazorAppWebAssembly.csproj", "{D077F2EA-5923-431D-9990-6DEE16966979}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SummarizeAndExpand", "..\SemanticKernel\SemanticConsoleApp\SummarizeAndExpand.csproj", "{188017B5-9CE6-42EC-B599-C8CE4A4CD022}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticKernelApi", "SemanticKernelApi\SemanticKernelApi.csproj", "{E0871B16-8CCC-4531-B208-C79DC96DD1A2}"
 EndProject
@@ -33,10 +29,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D3DA084B-F6E6-4758-AD84-374B4371AB2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D3DA084B-F6E6-4758-AD84-374B4371AB2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D3DA084B-F6E6-4758-AD84-374B4371AB2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D3DA084B-F6E6-4758-AD84-374B4371AB2E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{163C068B-2E53-4061-9942-B0CC3B68C884}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{163C068B-2E53-4061-9942-B0CC3B68C884}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{163C068B-2E53-4061-9942-B0CC3B68C884}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -49,10 +41,6 @@ Global
 		{D077F2EA-5923-431D-9990-6DEE16966979}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D077F2EA-5923-431D-9990-6DEE16966979}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D077F2EA-5923-431D-9990-6DEE16966979}.Release|Any CPU.Build.0 = Release|Any CPU
-		{188017B5-9CE6-42EC-B599-C8CE4A4CD022}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{188017B5-9CE6-42EC-B599-C8CE4A4CD022}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{188017B5-9CE6-42EC-B599-C8CE4A4CD022}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{188017B5-9CE6-42EC-B599-C8CE4A4CD022}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E0871B16-8CCC-4531-B208-C79DC96DD1A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E0871B16-8CCC-4531-B208-C79DC96DD1A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0871B16-8CCC-4531-B208-C79DC96DD1A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
