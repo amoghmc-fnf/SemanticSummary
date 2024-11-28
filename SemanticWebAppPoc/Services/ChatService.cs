@@ -1,4 +1,5 @@
 ﻿using Plugins;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -32,7 +33,9 @@ namespace SemanticWebAppPoc.Services
 
         public async Task<Topic> GetTopicAsync()
         {
-            return await _httpClient.GetFromJsonAsync<Topic>("Chat/settings/topic");
+            var response = await _httpClient.GetStringAsync("Chat/settings/topic");
+            var result = (Topic) Enum.Parse(typeof(Topic), response);
+            return result;
         }
 
         public async Task UpdateTopicAsync(Topic newTopic)
@@ -43,7 +46,9 @@ namespace SemanticWebAppPoc.Services
 
         public async Task<int> GetPromptLengthAsync()
         {
-            return await _httpClient.GetFromJsonAsync<int>("Chat/settings/promptLength");
+            var response = await _httpClient.GetStringAsync("Chat/settings/promptLength");
+            var result = int.Parse(response);
+            return result;
         }
 
         public async Task UpdatePromptLengthAsync(int newPromptLength)

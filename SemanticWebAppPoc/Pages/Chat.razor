@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using Microsoft.ML.Tokenizers
+@using Plugins
 @using SemanticWebAppPoc.Services
 @inject IChatService chatService
 
@@ -11,8 +12,8 @@
     <div class="settings-container">
         <div class="left-group">
             <label for="tokenLabel">Max Output Length</label>
-            <input type="range" min="10" max="200" id="tokenRangeId" @bind="tokenRange">
-            <span>@tokenRange</span>
+            <input type="range" min="10" max="200" id="outputLenId" @bind="outputLen">
+            <span>@outputLen</span>
         </div>
         <div class="right-group">
             <label for="topicLabel">Topic Name</label>
@@ -67,7 +68,7 @@
 </div>
 
 @code {
-    private int tokenRange;
+    private int outputLen;
     private string userMessage = string.Empty;
     private List<Message> messages = new List<Message>();
     private Topic topicSelect;
@@ -76,13 +77,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        tokenRange = 20;
+        outputLen = 20;
         // tokenizer = TiktokenTokenizer.CreateForModel("gpt-4o-mini");
-    }
-
-    private enum Topic
-    {
-        Generic, Development, Marketing, Legal
     }
 
     private void GetLiveCount(ChangeEventArgs changeEvent)
@@ -95,10 +91,14 @@
     {
         if (!string.IsNullOrWhiteSpace(userMessage))
         {
+            // await chatService.UpdateTopicAsync(topicSelect);
+            // await chatService.UpdatePromptLengthAsync(outputLen);
             var response = await chatService.GetChatAsync(userMessage);
             messages.Add(new Message { Text = userMessage, IsSent = true });
             messages.Add(new Message { Text = userMessage, IsSent = false, Texts = [response] });
             userMessage = string.Empty; // Clear the input after sending
+            topicSelect = await chatService.GetTopicAsync();
+            outputLen = await chatService.GetPromptLengthAsync();
             StateHasChanged();
         }
     }

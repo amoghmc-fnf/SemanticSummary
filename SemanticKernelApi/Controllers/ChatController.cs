@@ -3,14 +3,25 @@ using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Plugins;
+using System;
+using System.Text.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SemanticKernelApi.Controllers
 {
+    public interface IChatController
+    {
+        Task<IActionResult> Chat([FromBody] string userInput);
+        Task<IActionResult> GetPromptLength();
+        Task<IActionResult> GetTopic();
+        Task<IActionResult> UpdatePromptLength(int newPromptLength);
+        Task<IActionResult> UpdateTopic(Topic newTopic);
+    }
+
     [Route("api/[controller]")]
     [ApiController]
-    public class ChatController : ControllerBase
+    public class ChatController : ControllerBase, IChatController
     {
         private readonly Kernel _kernel;
         private readonly ChatHistory _history;
@@ -55,8 +66,8 @@ namespace SemanticKernelApi.Controllers
         {
             var getTopic = _kernel.Plugins.GetFunction("Settings", "get_topic");
             var topic = await _kernel.InvokeAsync(getTopic);
-
-            return Ok(topic.ToString());
+            var result = topic.ToString();
+            return Ok(result);
         }
 
         [HttpPost("settings/topic")]
@@ -76,8 +87,8 @@ namespace SemanticKernelApi.Controllers
         {
             var getLength = _kernel.Plugins.GetFunction("Settings", "get_length");
             var length = await _kernel.InvokeAsync(getLength);
-
-            return Ok(length.ToString());
+            var result = length.ToString();
+            return Ok(result);
         }
 
         [HttpPost("settings/promptLength")]
