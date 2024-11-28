@@ -8,8 +8,9 @@ namespace SummaryWebApp.Services
 {
     public interface IChatService
     {
-        Task<string> GetChatAsync(string input);
         Task<int> GetPromptLengthAsync();
+        Task<string> GetRegeneratedSummaryAsync(string input);
+        Task<string> GetSummaryAsync(string input);
         Task<Topic> GetTopicAsync();
         Task UpdatePromptLengthAsync(int newPromptLength);
         Task UpdateTopicAsync(Topic newTopic);
@@ -24,9 +25,16 @@ namespace SummaryWebApp.Services
             _httpClient = httpClient;
         }
 
-        public async Task<string> GetChatAsync(string input)
+        public async Task<string> GetSummaryAsync(string input)
         {
             var response = await _httpClient.PostAsJsonAsync("Chat/summary", input);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task<string> GetRegeneratedSummaryAsync(string input)
+        {
+            var response = await _httpClient.PostAsJsonAsync("Chat/regenerate_summary", input);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
@@ -34,7 +42,7 @@ namespace SummaryWebApp.Services
         public async Task<Topic> GetTopicAsync()
         {
             var response = await _httpClient.GetStringAsync("Chat/settings/topic");
-            var result = (Topic) Enum.Parse(typeof(Topic), response);
+            var result = (Topic)Enum.Parse(typeof(Topic), response);
             return result;
         }
 

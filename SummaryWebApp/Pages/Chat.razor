@@ -91,7 +91,7 @@
         {
             await chatService.UpdateTopicAsync(topicSelect);
             await chatService.UpdatePromptLengthAsync(outputLen);
-            var response = await chatService.GetChatAsync(userMessage);
+            var response = await chatService.GetSummaryAsync(userMessage);
             messages.Add(new Message { Text = userMessage, IsSent = true });
             messages.Add(new Message { Text = userMessage, IsSent = false, Texts = [response] });
             userMessage = string.Empty; // Clear the input after sending
@@ -106,9 +106,19 @@
         SendMessage();
     }
 
-    private void RegenerateLastMessage(Message message)
+    private async void RegenerateLastMessage(Message message)
     {
-        message.Texts.Add("Regenerated msg " + message.Texts.Count + "\n" + message.Text);
+        if (message.Texts.Count < 3)
+        {
+            await chatService.UpdateTopicAsync(topicSelect);
+            await chatService.UpdatePromptLengthAsync(outputLen);
+            var response = await chatService.GetRegeneratedSummaryAsync(message.Text);
+
+            message.Texts.Add(response);
+            message.currIndex += 1;
+            StateHasChanged();
+
+        }
     }
 
     private void PrevPage(Message message)

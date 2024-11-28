@@ -3,7 +3,16 @@ using System.ComponentModel;
 
 namespace Plugins;
 
-public class SettingsPlugin
+public interface ISettingsPlugin
+{
+    int GetPromptLength();
+    string GetSummaryPrompt();
+    Topic GetTopic();
+    void SetPromptLength(int newPromptLength);
+    void SetTopic(Topic newTopic);
+}
+
+public class SettingsPlugin : ISettingsPlugin
 {
     private Topic topic;
     private int promptLength;
@@ -13,7 +22,7 @@ public class SettingsPlugin
         topic = Topic.Generic;
         promptLength = 10;
     }
-    
+
     [KernelFunction("get_topic")]
     [Description("Gets the topic name for the summary")]
     [return: Description("Topic name")]
@@ -50,8 +59,7 @@ public class SettingsPlugin
     {
         return $"Summarize the above text for the topic {this.GetTopic()} " +
             $"in at most {this.GetPromptLength()} words. " +
-            $"Given input can be anything and you need to frame it for {this.GetTopic()} only! " +
-            $"Summarize the text without any excuses!";
+            $"Given input can be anything and you need to frame it for {this.GetTopic()} only! ";
     }
 }
 

@@ -12,11 +12,12 @@ namespace SemanticKernelApi.Controllers
 {
     public interface IChatController
     {
-        Task<IActionResult> Chat([FromBody] string userInput);
         Task<IActionResult> GetPromptLength();
+        Task<IActionResult> GetRegeneratedSummary([FromBody] string userInput);
+        Task<IActionResult> GetSummary([FromBody] string userInput);
         Task<IActionResult> GetTopic();
-        Task<IActionResult> UpdatePromptLength(int newPromptLength);
-        Task<IActionResult> UpdateTopic(Topic newTopic);
+        Task<IActionResult> UpdatePromptLength([FromBody] int newPromptLength);
+        Task<IActionResult> UpdateTopic([FromBody] Topic newTopic);
     }
 
     [Route("api/[controller]")]
@@ -36,13 +37,41 @@ namespace SemanticKernelApi.Controllers
         }
 
         [HttpPost("summary")]
-        public async Task<IActionResult> Chat([FromBody] string userInput)
+        public async Task<IActionResult> GetSummary([FromBody] string userInput)
         {
             _history.AddUserMessage(userInput);
 
             var openAIPromptExecutionSettings = new OpenAIPromptExecutionSettings
             {
                 ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions
+            };
+
+            var result = await _chatCompletionService.GetChatMessageContentAsync(
+                _history,
+                executionSettings: openAIPromptExecutionSettings,
+                kernel: _kernel);
+
+            _history.AddMessage(result.Role, result.Content ?? string.Empty);
+            //var getTopic = _kernel.Plugins.GetFunction("Settings", "get_topic");
+            //var getLength = _kernel.Plugins.GetFunction("Settings", "get_length");
+            //var getSummary = _kernel.Plugins.GetFunction("Settings", "get_summary_prompt");
+            //var topic = await _kernel.InvokeAsync(getTopic);
+            //var length = await _kernel.InvokeAsync(getLength);
+            //var summary = await _kernel.InvokeAsync(getSummary);
+            //Console.WriteLine("Kernel Settings > " + topic + "\t" + length + "\t" + summary);
+            return Ok(result.Content);
+        }
+
+        [HttpPost("regenerate_summary")]
+        public async Task<IActionResult> GetRegeneratedSummary([FromBody] string userInput)
+        {
+            _history.AddUserMessage("Regenerate summary for below user prompt: \n");
+            _history.AddUserMessage(userInput);
+
+            var openAIPromptExecutionSettings = new OpenAIPromptExecutionSettings
+            {
+                ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions,
+                Temperature = 0.5
             };
 
             var result = await _chatCompletionService.GetChatMessageContentAsync(
@@ -81,7 +110,7 @@ namespace SemanticKernelApi.Controllers
 
             var getTopic = _kernel.Plugins.GetFunction("Settings", "get_topic");
             var topic = await _kernel.InvokeAsync(getTopic);
-            Console.WriteLine("Topic setting > " + newTopic +topic);
+            Console.WriteLine("Topic setting > " + newTopic + topic);
             return Ok("Topic updated successfully");
         }
 
