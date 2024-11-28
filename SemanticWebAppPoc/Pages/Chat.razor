@@ -1,5 +1,7 @@
 ﻿@page "/"
 @using Microsoft.ML.Tokenizers
+@using SemanticWebAppPoc.Services
+@inject IChatService chatService
 
 <PageTitle>Summarize</PageTitle>
 
@@ -93,9 +95,11 @@
     {
         if (!string.IsNullOrWhiteSpace(userMessage))
         {
-            messages.Add(new Message { Text = userMessage + tokenRange.ToString(), IsSent = true });
-            messages.Add(new Message { Text = userMessage, IsSent = false, Texts = [userMessage] });
+            var response = await chatService.GetChatAsync(userMessage);
+            messages.Add(new Message { Text = userMessage, IsSent = true });
+            messages.Add(new Message { Text = userMessage, IsSent = false, Texts = [response] });
             userMessage = string.Empty; // Clear the input after sending
+            StateHasChanged();
         }
     }
 
