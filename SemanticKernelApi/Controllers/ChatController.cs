@@ -42,13 +42,6 @@ namespace SemanticKernelApi
                 kernel: _kernel);
 
             _history.AddMessage(result.Role, result.Content ?? string.Empty);
-            //var getTopic = _kernel.Plugins.GetFunction("Settings", "get_topic");
-            //var getLength = _kernel.Plugins.GetFunction("Settings", "get_length");
-            //var getSummary = _kernel.Plugins.GetFunction("Settings", "get_summary_prompt");
-            //var topic = await _kernel.InvokeAsync(getTopic);
-            //var length = await _kernel.InvokeAsync(getLength);
-            //var summary = await _kernel.InvokeAsync(getSummary);
-            //Console.WriteLine("Kernel Settings > " + topic + "\t" + length + "\t" + summary);
             return Ok(result.Content);
         }
 
@@ -70,13 +63,6 @@ namespace SemanticKernelApi
                 kernel: _kernel);
 
             _history.AddMessage(result.Role, result.Content ?? string.Empty);
-            //var getTopic = _kernel.Plugins.GetFunction("Settings", "get_topic");
-            //var getLength = _kernel.Plugins.GetFunction("Settings", "get_length");
-            //var getSummary = _kernel.Plugins.GetFunction("Settings", "get_summary_prompt");
-            //var topic = await _kernel.InvokeAsync(getTopic);
-            //var length = await _kernel.InvokeAsync(getLength);
-            //var summary = await _kernel.InvokeAsync(getSummary);
-            //Console.WriteLine("Kernel Settings > " + topic + "\t" + length + "\t" + summary);
             return Ok(result.Content);
         }
 
@@ -124,7 +110,6 @@ namespace SemanticKernelApi
 
             var getLength = _kernel.Plugins.GetFunction("Settings", "get_length");
             var length = await _kernel.InvokeAsync(getLength);
-            Console.WriteLine("Len setting > " + newPromptLength + length);
             return Ok("Prompt length updated successfully");
         }
 
