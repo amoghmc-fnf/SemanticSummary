@@ -1,4 +1,5 @@
 ﻿using Plugins;
+using SummaryWebApp.Contracts;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -6,10 +7,6 @@ using System.Threading.Tasks;
 
 namespace SummaryWebApp.Services
 {
-    public interface ITokenizerService
-    {
-        Task<int> GetTokenCountAsync(string userInput);
-    }
 
     public class TokenizerService : ITokenizerService
     {

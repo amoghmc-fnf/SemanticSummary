@@ -1,4 +1,5 @@
 ﻿using Plugins;
+using SummaryWebApp.Contracts;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -6,15 +7,6 @@ using System.Threading.Tasks;
 
 namespace SummaryWebApp.Services
 {
-    public interface IChatService
-    {
-        Task<int> GetPromptLengthAsync();
-        Task<string> GetRegeneratedSummaryAsync(string input);
-        Task<string> GetSummaryAsync(string input);
-        Task<Topic> GetTopicAsync();
-        Task UpdatePromptLengthAsync(int newPromptLength);
-        Task UpdateTopicAsync(Topic newTopic);
-    }
 
     public class ChatService : IChatService
     {

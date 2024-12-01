@@ -3,15 +3,6 @@ using System.ComponentModel;
 
 namespace Plugins;
 
-public interface ISettingsPlugin
-{
-    int GetPromptLength();
-    string GetSummaryPrompt();
-    Topic GetTopic();
-    void SetPromptLength(int newPromptLength);
-    void SetTopic(Topic newTopic);
-}
-
 public class SettingsPlugin : ISettingsPlugin
 {
     private Topic topic;

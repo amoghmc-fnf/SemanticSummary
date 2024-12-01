@@ -5,20 +5,10 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Plugins;
 using System;
 using System.Text.Json;
+using SemanticKernelApi.Contracts;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
-namespace SemanticKernelApi.Controllers
+namespace SemanticKernelApi
 {
-    public interface IChatController
-    {
-        Task<IActionResult> GetPromptLength();
-        Task<IActionResult> GetRegeneratedSummary([FromBody] string userInput);
-        Task<IActionResult> GetSummary([FromBody] string userInput);
-        Task<IActionResult> GetTopic();
-        Task<IActionResult> UpdatePromptLength([FromBody] int newPromptLength);
-        Task<IActionResult> UpdateTopic([FromBody] Topic newTopic);
-    }
 
     [Route("api/[controller]")]
     [ApiController]

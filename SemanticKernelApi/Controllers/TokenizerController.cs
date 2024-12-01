@@ -1,14 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.ML.Tokenizers;
+using SemanticKernelApi.Contracts;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
-namespace SemanticKernelApi.Controllers
+namespace SemanticKernelApi
 {
-    public interface ITokenizerController
-    {
-        Task<IActionResult> GetTokenCount([FromBody] string userInput);
-    }
 
     [Route("api/[controller]")]
     [ApiController]
