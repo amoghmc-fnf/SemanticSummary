@@ -1,6 +1,8 @@
 using Microsoft.ML.Tokenizers;
 using Microsoft.SemanticKernel;
 using Plugins;
+using SemanticKernelService.Contracts;
+using SemanticKernelService.Services;
 
 namespace SemanticKernelApi
 {
@@ -32,6 +34,10 @@ namespace SemanticKernelApi
                 return kernelBuilder.Build();
             });
             builder.Services.AddSingleton<Tokenizer>(TiktokenTokenizer.CreateForModel("gpt-4o-mini"));
+
+            // Add API services
+            builder.Services.AddSingleton<IChatService, ChatService>();
+            builder.Services.AddSingleton<ITokenizerService, TokenizerService>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.ML.Tokenizers;
 using SemanticKernelApi.Contracts;
+using SemanticKernelService.Contracts;
 
 namespace SemanticKernelApi
 {
@@ -9,18 +10,18 @@ namespace SemanticKernelApi
     [ApiController]
     public class TokenizerController : ControllerBase, ITokenizerController
     {
-        private Tokenizer _tokenizer;
+        private readonly ITokenizerService _tokenizerService;
 
-        public TokenizerController(Tokenizer tokenizer)
+        public TokenizerController(ITokenizerService service)
         {
-            _tokenizer = tokenizer;
+            _tokenizerService = service;
         }
 
         [HttpPost("count")]
         public async Task<IActionResult> GetTokenCount([FromBody] string userInput)
         {
-            var result = _tokenizer.CountTokens(userInput);
-            return Ok(result.ToString());
+            var result = await _tokenizerService.GetTokenCount(userInput);
+            return Ok(result);
         }
     }
 }
