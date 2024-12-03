@@ -21,7 +21,7 @@ namespace SummaryWebApp.Pages
         /// This method gives the live count of the tokens used by the input message
         /// </summary>
         /// <param name="changeEvent">
-        /// This is passed when a change is detected in the input message div
+        /// The change in input message length
         /// </param>
         private async void GetLiveCount(ChangeEventArgs changeEvent)
         {
@@ -49,6 +49,7 @@ namespace SummaryWebApp.Pages
                 userMessage = string.Empty; // Clear the input after sending
                 topicSelect = await chatService.GetTopicAsync();
                 outputLen = await chatService.GetPromptLengthAsync();
+                inputTokenCount = 0;
                 StateHasChanged();
             }
         }
