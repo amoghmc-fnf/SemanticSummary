@@ -1,4 +1,4 @@
-﻿using Plugins;
+﻿using Plugins.Models;
 
 namespace SemanticKernelService.Contracts
 {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Plugins;
+using Plugins.Models;
 
 namespace SemanticKernelApi.Contracts
 {

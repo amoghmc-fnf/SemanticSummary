@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Components;
-using Plugins;
+using Plugins.Models;
 using SummaryWebApp.Models;
 
 namespace SummaryWebApp.Pages
@@ -7,13 +7,15 @@ namespace SummaryWebApp.Pages
     public partial class Chat
     {
         private int outputLen;
-        private string userMessage = string.Empty;
-        private List<Message> messages = new List<Message>();
+        private string userMessage;
+        private List<Message> messages;
         private Topic topicSelect;
-        private int inputTokenCount = 0;
+        private int inputTokenCount;
 
         protected override async Task OnInitializedAsync()
         {
+            userMessage = String.Empty;
+            messages = new List<Message>();
             outputLen = 20;
         }
 

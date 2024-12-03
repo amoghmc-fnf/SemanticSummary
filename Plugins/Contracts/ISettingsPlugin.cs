@@ -1,4 +1,6 @@
-﻿namespace Plugins
+﻿using Plugins.Models;
+
+namespace Plugins
 {
     public interface ISettingsPlugin
     {

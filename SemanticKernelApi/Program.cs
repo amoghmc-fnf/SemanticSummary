@@ -1,6 +1,6 @@
 using Microsoft.ML.Tokenizers;
 using Microsoft.SemanticKernel;
-using Plugins;
+using Plugins.Models;
 using SemanticKernelService.Contracts;
 using SemanticKernelService.Services;
 

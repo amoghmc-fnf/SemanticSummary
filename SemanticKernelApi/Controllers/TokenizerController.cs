@@ -3,7 +3,7 @@ using Microsoft.ML.Tokenizers;
 using SemanticKernelApi.Contracts;
 using SemanticKernelService.Contracts;
 
-namespace SemanticKernelApi
+namespace SemanticKernelApi.Controllers
 {
 
     [Route("api/[controller]")]

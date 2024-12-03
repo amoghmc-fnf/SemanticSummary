@@ -1,7 +1,7 @@
 ﻿using Microsoft.SemanticKernel;
 using System.ComponentModel;
 
-namespace Plugins;
+namespace Plugins.Models;
 
 public class SettingsPlugin : ISettingsPlugin
 {
@@ -48,13 +48,8 @@ public class SettingsPlugin : ISettingsPlugin
     [Description("Gets the prompt for summary using the most recently updated settings for the topic name and prompt length")]
     public string GetSummaryPrompt()
     {
-        return $"Summarize the above text for the topic {this.GetTopic()} " +
-            $"in at most {this.GetPromptLength()} words. " +
-            $"Given input can be anything and you need to frame it for {this.GetTopic()} only! ";
+        return $"Summarize the above text for the topic {GetTopic()} " +
+            $"in at most {GetPromptLength()} words. " +
+            $"Given input can be anything and you need to frame it for {GetTopic()} only! ";
     }
-}
-
-public enum Topic
-{
-    Generic, Development, Marketing, Legal, Comedy
 }

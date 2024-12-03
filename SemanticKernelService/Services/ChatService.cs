@@ -1,7 +1,7 @@
 ﻿using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
-using Plugins;
+using Plugins.Models;
 using SemanticKernelService.Contracts;
 
 namespace SemanticKernelService.Services

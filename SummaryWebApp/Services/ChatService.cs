@@ -1,4 +1,4 @@
-﻿using Plugins;
+﻿using Plugins.Models;
 using SummaryWebApp.Contracts;
 using System.Diagnostics;
 using System.Net.Http;

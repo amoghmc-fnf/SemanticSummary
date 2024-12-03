@@ -2,13 +2,13 @@
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
-using Plugins;
 using System;
 using System.Text.Json;
 using SemanticKernelApi.Contracts;
 using SemanticKernelService.Contracts;
+using Plugins.Models;
 
-namespace SemanticKernelApi
+namespace SemanticKernelApi.Controllers
 {
 
     [Route("api/[controller]")]
@@ -19,7 +19,7 @@ namespace SemanticKernelApi
 
         public ChatController(IChatService service)
         {
-            this._chatService = service;
+            _chatService = service;
         }
 
         [HttpPost("summary")]
