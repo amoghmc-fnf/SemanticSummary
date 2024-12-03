@@ -14,10 +14,13 @@ namespace SummaryWebApp
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
             // Add appsettings.json config
+            IConfiguration configuration = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json")
+                    .Build();
 
             builder.Services.AddTransient(sp => new HttpClient
             {
-                BaseAddress = new Uri("http://localhost:5129/api/")
+                BaseAddress = new Uri(configuration.GetSection("ApiEndpoint").Value)
             });
             builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddScoped<ITokenizerService, TokenizerService>();
