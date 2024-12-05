@@ -15,7 +15,7 @@ public class SettingsPlugin : ISettingsPlugin
         topic = Topic.Generic;
         promptLength = 10;
         configuration = new ConfigurationBuilder()
-                        .AddJsonFile("C:\\Users\\6147952\\source\\repos\\SemanticSummary\\Plugins\\appsettings.json")
+                        .AddJsonFile("appsettings.json")
                         .Build();
     }
 
