@@ -1,4 +1,5 @@
-﻿using Microsoft.SemanticKernel;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.SemanticKernel;
 using System.ComponentModel;
 
 namespace Plugins.Models;
@@ -7,15 +8,19 @@ public class SettingsPlugin : ISettingsPlugin
 {
     private Topic topic;
     private int promptLength;
+    private IConfiguration configuration;
 
     public SettingsPlugin()
     {
         topic = Topic.Generic;
         promptLength = 10;
+        configuration = new ConfigurationBuilder()
+                        .AddJsonFile("C:\\Users\\6147952\\source\\repos\\SemanticSummary\\Plugins\\appsettings.json")
+                        .Build();
     }
 
     [KernelFunction("get_topic")]
-    [Description("Gets the topic name for the summary")]
+    [Description("Gets the latest topic name for the summary")]
     [return: Description("Topic name")]
     public Topic GetTopic()
     {
@@ -30,7 +35,7 @@ public class SettingsPlugin : ISettingsPlugin
     }
 
     [KernelFunction("get_length")]
-    [Description("Gets the maximum word count for the LLM to output for the summary")]
+    [Description("Gets the latest maximum word count for the LLM to output for the summary")]
     [return: Description("Output length")]
     public int GetPromptLength()
     {
@@ -45,11 +50,13 @@ public class SettingsPlugin : ISettingsPlugin
     }
 
     [KernelFunction("get_summary_prompt")]
-    [Description("Gets the prompt for summary using the most recently updated settings for the topic name and prompt length")]
+    [Description("Gets the prompt for summary using the latest updated settings for the topic name and prompt length")]
     public string GetSummaryPrompt()
     {
+        string topicPath = Path.Combine(configuration["PromptsForTopics"], $"{GetTopic()}.txt");
+        string topicDescription = File.ReadAllText(topicPath);
         return $"Summarize the above text for the topic {GetTopic()} " +
-            $"in at most {GetPromptLength()} words. " +
-            $"Given input can be anything and you need to frame it for {GetTopic()} only! ";
+            $"in at most {GetPromptLength()} words.\n" +
+            $"Use the following description for the topic:\n{topicDescription}";
     }
 }

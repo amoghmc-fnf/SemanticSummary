@@ -99,5 +99,13 @@ namespace SemanticKernelService.Services
             var length = await _kernel.InvokeAsync(getLength);
             return;
         }
+
+        public async Task<string> GetSummaryPrompt()
+        {
+            var getSummaryPrompt = _kernel.Plugins.GetFunction("Settings", "get_summary_prompt");
+            var summaryPrompt = await _kernel.InvokeAsync(getSummaryPrompt);
+            var result = summaryPrompt.ToString();
+            return result;
+        }
     }
 }

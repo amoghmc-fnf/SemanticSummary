@@ -63,5 +63,12 @@ namespace SemanticKernelApi.Controllers
             await _chatService.UpdatePromptLength(newPromptLength);
             return Ok("Prompt length updated successfully!");
         }
+
+        [HttpGet("settings/summaryPrompt")]
+        public async Task<IActionResult> GetSummaryPrompt()
+        {
+            var result = await _chatService.GetSummaryPrompt();
+            return Ok(result);
+        }
     }
 }

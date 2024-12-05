@@ -1,0 +1,1 @@
+﻿Output should be able to market the given text in a short summary for customers
