@@ -16,6 +16,7 @@ namespace SemanticKernelApi
             ConfigureCors(builder);
 
             IConfigurationRoot config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
             .AddUserSecrets<Program>()
             .Build();
 
@@ -29,14 +30,18 @@ namespace SemanticKernelApi
                     config["Key"]);
 
                 // Add the SettingsPlugin
-                kernelBuilder.Plugins.AddFromType<SettingsPlugin>(pluginName: "Settings");
+                var settings = new SettingsPlugin(config);
+                kernelBuilder.Plugins.AddFromObject(settings, pluginName: "Settings");
 
                 return kernelBuilder.Build();
             });
-            builder.Services.AddSingleton<Tokenizer>(TiktokenTokenizer.CreateForModel("gpt-4o-mini"));
+
+            // Add configuration for appsettings
+            builder.Services.AddSingleton<IConfiguration>(config);
 
             // Add API services
             builder.Services.AddSingleton<IChatService, ChatService>();
+            builder.Services.AddSingleton<Tokenizer>(TiktokenTokenizer.CreateForModel("gpt-4o-mini"));
             builder.Services.AddSingleton<ITokenizerService, TokenizerService>();
 
             builder.Services.AddControllers();

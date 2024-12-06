@@ -10,13 +10,11 @@ public class SettingsPlugin : ISettingsPlugin
     private int promptLength;
     private IConfiguration configuration;
 
-    public SettingsPlugin()
+    public SettingsPlugin(IConfiguration configuration)
     {
         topic = Topic.Generic;
         promptLength = 10;
-        configuration = new ConfigurationBuilder()
-                        .AddJsonFile("appsettings.json")
-                        .Build();
+        this.configuration = configuration;
     }
 
     [KernelFunction("get_topic")]

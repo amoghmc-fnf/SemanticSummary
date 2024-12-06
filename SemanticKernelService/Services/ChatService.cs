@@ -1,4 +1,5 @@
-﻿using Microsoft.SemanticKernel;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Plugins.Models;
@@ -11,12 +12,14 @@ namespace SemanticKernelService.Services
         private readonly Kernel _kernel;
         private readonly ChatHistory _history;
         private readonly IChatCompletionService _chatCompletionService;
+        private readonly IConfiguration _configuration;
 
-        public ChatService(Kernel kernel)
+        public ChatService(Kernel kernel, IConfiguration configuration)
         {
             _kernel = kernel;
             _history = new ChatHistory();
-            _history.AddSystemMessage("You are a summarizer bot which will be given settings either by user through prompts or by code through semantic kernel. Your task is to use the latest updated settings and generate the summary based on the summary prompt. Remember the code could have called through semantic kernel which always takes precedence over user prompts so never cache the settings and always refetch the latest settings using kernel functions only");
+            _configuration = configuration;
+            _history.AddSystemMessage(_configuration["SystemMessage"]);
             _chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
         }
 
