@@ -19,8 +19,14 @@ namespace SemanticKernelService.Services
             _kernel = kernel;
             _history = new ChatHistory();
             _configuration = configuration;
-            _history.AddSystemMessage(_configuration["SystemMessage"]);
+            InititializeSystemMessage();
             _chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
+        }
+
+        private void InititializeSystemMessage()
+        {
+            var systemMessage = File.ReadAllText(_configuration["SystemMessage"]);
+            _history.AddSystemMessage(systemMessage);
         }
 
         public async Task<string> GetSummary(string userInput)
