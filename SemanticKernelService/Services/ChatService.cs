@@ -17,7 +17,7 @@ namespace SemanticKernelService.Services
         public ChatService(Kernel kernel, IConfiguration configuration)
         {
             _kernel = kernel;
-            _history = new ChatHistory();
+            _history = [];
             _configuration = configuration;
             InititializeSystemMessage();
             _chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
@@ -70,13 +70,11 @@ namespace SemanticKernelService.Services
         public async Task UpdateTopic(Topic newTopic)
         {
             var setTopic = _kernel.Plugins.GetFunction("Settings", "set_topic");
-            var setTopicArgs = new KernelArguments();
-            setTopicArgs.Add("newTopic", newTopic);
-
+            var setTopicArgs = new KernelArguments
+            {
+                { "newTopic", newTopic }
+            };
             await _kernel.InvokeAsync(setTopic, setTopicArgs);
-
-            var getTopic = _kernel.Plugins.GetFunction("Settings", "get_topic");
-            var topic = await _kernel.InvokeAsync(getTopic);
             return;
         }
 
@@ -91,13 +89,11 @@ namespace SemanticKernelService.Services
         public async Task UpdatePromptLength(int newPromptLength)
         {
             var setLength = _kernel.Plugins.GetFunction("Settings", "set_length");
-            var setLengthArgs = new KernelArguments();
-            setLengthArgs.Add("newPromptLength", newPromptLength);
-
+            var setLengthArgs = new KernelArguments
+            {
+                { "newPromptLength", newPromptLength }
+            };
             await _kernel.InvokeAsync(setLength, setLengthArgs);
-
-            var getLength = _kernel.Plugins.GetFunction("Settings", "get_length");
-            var length = await _kernel.InvokeAsync(getLength);
             return;
         }
 

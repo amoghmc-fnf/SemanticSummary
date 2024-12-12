@@ -15,7 +15,7 @@ namespace SummaryWebApp.Pages
         protected override async Task OnInitializedAsync()
         {
             userMessage = String.Empty;
-            messages = new List<Message>();
+            messages = [];
             outputLen = 20;
         }
 
