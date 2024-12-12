@@ -8,6 +8,8 @@ namespace SemanticKernelApi
 {
     public class Program
     {
+        const string allowAll = "AllowAll";
+
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -41,7 +43,7 @@ namespace SemanticKernelApi
 
             // Add API services
             builder.Services.AddSingleton<IChatService, ChatService>();
-            builder.Services.AddSingleton<Tokenizer>(TiktokenTokenizer.CreateForModel("gpt-4o-mini"));
+            builder.Services.AddSingleton<Tokenizer>(TiktokenTokenizer.CreateForModel(config["Model"]));
             builder.Services.AddSingleton<ITokenizerService, TokenizerService>();
 
             builder.Services.AddControllers();
@@ -58,7 +60,7 @@ namespace SemanticKernelApi
                 app.UseSwaggerUI();
             }
 
-            app.UseCors("cors");
+            app.UseCors(allowAll);
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
@@ -69,7 +71,7 @@ namespace SemanticKernelApi
         {
             builder.Services.AddCors(setUpAction =>
             {
-                setUpAction.AddPolicy("cors", policy =>
+                setUpAction.AddPolicy(allowAll, policy =>
                 {
                     policy.AllowAnyHeader();
                     policy.AllowAnyMethod();

@@ -31,31 +31,23 @@ namespace SemanticKernelService.Services
 
         public async Task<string> GetSummary(string userInput)
         {
-            _history.AddUserMessage(userInput);
-
-            var openAIPromptExecutionSettings = new OpenAIPromptExecutionSettings
-            {
-                ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions
-            };
-
-            var result = await _chatCompletionService.GetChatMessageContentAsync(
-                _history,
-                executionSettings: openAIPromptExecutionSettings,
-                kernel: _kernel);
-
-            _history.AddMessage(result.Role, result.Content ?? string.Empty);
-            return result.Content;
+            return await GetResultForPrompt(userInput, 0);
         }
 
         public async Task<string> GetRegeneratedSummary(string userInput)
         {
             _history.AddUserMessage("Regenerate summary for below user prompt: \n");
+            return await GetResultForPrompt(userInput, (float) 0.5);
+        }
+
+        private async Task<string> GetResultForPrompt(string userInput, float temperature)
+        {
             _history.AddUserMessage(userInput);
 
             var openAIPromptExecutionSettings = new OpenAIPromptExecutionSettings
             {
                 ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions,
-                Temperature = 0.5
+                Temperature = temperature
             };
 
             var result = await _chatCompletionService.GetChatMessageContentAsync(
