@@ -31,7 +31,7 @@ namespace SemanticKernelService.Services
 
         public async Task<string> GetSummary(string userInput)
         {
-            return await GetResultForPrompt(userInput, 0);
+            return await GetResultForPrompt(userInput);
         }
 
         public async Task<string> GetRegeneratedSummary(string userInput)
@@ -40,7 +40,7 @@ namespace SemanticKernelService.Services
             return await GetResultForPrompt(userInput, (float) 0.5);
         }
 
-        private async Task<string> GetResultForPrompt(string userInput, float temperature)
+        private async Task<string> GetResultForPrompt(string userInput, float temperature = 0)
         {
             _history.AddUserMessage(userInput);
 
