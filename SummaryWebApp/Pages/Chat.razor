@@ -14,11 +14,13 @@
 <div class="chat-container">
     <div class="settings-container">
         <div class="left-group">
+            <!-- Slider to adjust the maximum output length -->
             <label for="tokenLabel">Max Output Length</label>
             <input type="range" min="10" max="200" id="outputLenId" @bind="outputLen">
             <span>@outputLen</span>
         </div>
         <div class="right-group">
+            <!-- Dropdown to select the topic -->
             <label for="topicLabel">Topic Name</label>
             <InputSelect @bind-Value="topicSelect" id="topicSelectId">
                 @foreach (var opt in Enum.GetValues(typeof(Topic)))
@@ -33,12 +35,14 @@
         {
             if (message.IsSent)
             {
+                <!-- Display sent messages -->
                 <div class="sent-message">
                     @message.UserText
                 </div>
             }
             else
             {
+                <!-- Display received messages with options to regenerate, navigate responses, and show timestamp -->
                 <div class="received-message">
                     @message.Responses[message.CurrIndex]
                     <hr>
@@ -61,14 +65,13 @@
         <DataAnnotationsValidator />
         <ValidationSummary />
         <div class="input-container">
+            <!-- Input field for user message with live token count -->
             <InputText @bind-Value="userMessage" @oninput="GetLiveCount" placeholder="Type your message..." class="message-input" />
             <button type="submit" class="btn btn-primary">Send</button>
         </div>
     </EditForm>
     <div>
+        <!-- Display the current input token count -->
         Input token count: @inputTokenCount
     </div>
 </div>
-
-
-
