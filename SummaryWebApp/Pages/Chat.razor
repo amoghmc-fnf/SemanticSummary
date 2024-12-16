@@ -34,20 +34,20 @@
             if (message.IsSent)
             {
                 <div class="sent-message">
-                    @message.Text
+                    @message.UserText
                 </div>
             }
             else
             {
                 <div class="received-message">
-                    @message.Texts[message.CurrIndex]
+                    @message.Responses[message.CurrIndex]
                     <hr>
                     <div class="left-group">
                         <button class="btn btn-secondary" @onclick="() => RegenerateLastMessage(message)">&#8635;</button>
-                        @if (message.Texts.Count > 1)
+                        @if (message.Responses.Count > 1)
                         {
                             <button class="btn btn-secondary" @onclick="() => PrevPage(message)">&lt</button>
-                            <button class="btn btn-light" disabled="true">@(@message.CurrIndex + 1) / @message.Texts.Count</button>
+                            <button class="btn btn-light" disabled="true">@(@message.CurrIndex + 1) / @message.Responses.Count</button>
                             <button class="btn btn-secondary" @onclick="() => NextPage(message)">&gt</button>
                         }
                         <p class="right-group">@DateTime.Now</p>
@@ -57,7 +57,7 @@
         }
     </div>
 
-    <EditForm Model="this" OnValidSubmit="HandleValidSubmit">
+    <EditForm Model="this" OnValidSubmit="SendMessage">
         <DataAnnotationsValidator />
         <ValidationSummary />
         <div class="input-container">
