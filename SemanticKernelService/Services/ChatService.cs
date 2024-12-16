@@ -26,6 +26,8 @@ namespace SemanticKernelService.Services
         /// <param name="configuration">The configuration to use for retrieving settings.</param>
         public ChatService(Kernel kernel, IConfiguration configuration)
         {
+            ArgumentNullException.ThrowIfNull(nameof(kernel));
+            ArgumentNullException.ThrowIfNull(nameof(configuration));
             _kernel = kernel;
             _history = new ChatHistory();
             _configuration = configuration;
@@ -38,7 +40,16 @@ namespace SemanticKernelService.Services
         /// </summary>
         private void InititializeSystemMessage()
         {
-            var systemMessage = File.ReadAllText(_configuration["SystemMessage"]);
+            string systemMessage;
+            try
+            {
+                systemMessage = File.ReadAllText(_configuration["SystemMessage"]);
+            }
+            catch (ArgumentNullException)
+            {
+                var systemMessagePath = _configuration["SystemMessage"];
+                throw new ArgumentNullException(nameof(systemMessagePath), "Path for file 'SystemMessage' cannot be empty!");
+            }
             _history.AddSystemMessage(systemMessage);
         }
 
@@ -85,6 +96,10 @@ namespace SemanticKernelService.Services
                 kernel: _kernel);
 
             _history.AddMessage(result.Role, result.Content ?? string.Empty);
+            if (result.Content == null)
+            {
+                throw new NullReferenceException("Response cannot be null!");
+            }
             return result.Content;
         }
 

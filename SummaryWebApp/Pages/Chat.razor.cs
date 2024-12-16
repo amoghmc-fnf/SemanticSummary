@@ -30,7 +30,15 @@ namespace SummaryWebApp.Pages
         /// <param name="changeEvent">The change in input message length.</param>
         private async void GetLiveCount(ChangeEventArgs changeEvent)
         {
-            userMessage = changeEvent.Value.ToString();
+            try
+            {
+                userMessage = changeEvent.Value.ToString();
+            }
+            catch (Exception)
+            {
+
+                throw new NullReferenceException("Change in input text box cannot be null!");
+            }
             inputTokenCount = await tokenizerService.GetTokenCountAsync(userMessage);
             StateHasChanged();
         }
@@ -84,7 +92,7 @@ namespace SummaryWebApp.Pages
         /// Moves to the previous response page of the message.
         /// </summary>
         /// <param name="message">The message to navigate.</param>
-        private void PrevPage(Message message)
+        private static void PrevPage(Message message)
         {
             if (message.CurrIndex > 0)
                 message.CurrIndex--;
@@ -94,7 +102,7 @@ namespace SummaryWebApp.Pages
         /// Moves to the next response page of the message.
         /// </summary>
         /// <param name="message">The message to navigate.</param>
-        private void NextPage(Message message)
+        private static void NextPage(Message message)
         {
             if (message.CurrIndex < message.Responses.Count - 1)
                 message.CurrIndex++;

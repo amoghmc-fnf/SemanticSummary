@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.SemanticKernel;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Plugins.Models
 {
@@ -11,7 +12,7 @@ namespace Plugins.Models
     {
         private Topic topic;
         private int promptLength;
-        private IConfiguration configuration;
+        private readonly IConfiguration configuration;
 
         /// <summary>
         /// Initializes a new instance of the SettingsPlugin class with the specified configuration.
@@ -21,6 +22,7 @@ namespace Plugins.Models
         {
             topic = Topic.Generic;
             promptLength = 10;
+            ArgumentNullException.ThrowIfNull(configuration);
             this.configuration = configuration;
         }
 
@@ -78,7 +80,16 @@ namespace Plugins.Models
         [Description("Gets the prompt for summary using the latest updated settings for the topic name and prompt length")]
         public string GetSummaryPrompt()
         {
-            string topicPath = Path.Combine(configuration["PromptsForTopics"], $"{GetTopic()}.txt");
+            string topicPath;
+            try
+            {
+                topicPath = Path.Combine(configuration["PromptsForTopics"], $"{GetTopic()}.txt");
+            }
+            catch (ArgumentNullException)
+            {
+                var promptsForTopicsPath = configuration["PromptsForTopics"];
+                throw new ArgumentNullException(nameof(promptsForTopicsPath), "Path for folder 'PromptsForTopics' cannot be empty!");
+            }
             string topicDescription = File.ReadAllText(topicPath);
             return $"Summarize the above text for the topic {GetTopic()} " +
                 $"in at most {GetPromptLength()} words.\n" +
