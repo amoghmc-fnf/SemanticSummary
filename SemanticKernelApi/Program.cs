@@ -6,10 +6,17 @@ using SemanticKernelService.Services;
 
 namespace SemanticKernelApi
 {
+    /// <summary>
+    /// The main entry point for the Semantic Kernel API application.
+    /// </summary>
     public class Program
     {
         const string allowAll = "AllowAll";
 
+        /// <summary>
+        /// The main method, which is the entry point of the application.
+        /// </summary>
+        /// <param name="args">The command-line arguments.</param>
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -18,9 +25,9 @@ namespace SemanticKernelApi
             ConfigureCors(builder);
 
             IConfigurationRoot config = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
-            .AddUserSecrets<Program>()
-            .Build();
+                .AddJsonFile("appsettings.json")
+                .AddUserSecrets<Program>()
+                .Build();
 
             // Create a kernel with Azure OpenAI chat completion
             builder.Services.AddSingleton(sp =>
@@ -67,6 +74,10 @@ namespace SemanticKernelApi
             app.Run();
         }
 
+        /// <summary>
+        /// Configures CORS to allow all origins, headers, and methods.
+        /// </summary>
+        /// <param name="builder">The web application builder.</param>
         private static void ConfigureCors(WebApplicationBuilder builder)
         {
             builder.Services.AddCors(setUpAction =>
