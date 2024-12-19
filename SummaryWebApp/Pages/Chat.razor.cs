@@ -32,6 +32,7 @@ namespace SummaryWebApp.Pages
         {
             try
             {
+                // TODO: check exceptions for both ArgumentNUll and NullReference in private method
                 userMessage = changeEvent.Value.ToString();
             }
             catch (Exception)

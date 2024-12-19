@@ -10,9 +10,9 @@ namespace Plugins.Models
     /// </summary>
     public class SettingsPlugin : ISettingsPlugin
     {
-        private Topic topic;
-        private int promptLength;
-        private readonly IConfiguration configuration;
+        private Topic _topic;
+        private int _promptLength;
+        private readonly IConfiguration _configuration;
 
         /// <summary>
         /// Initializes a new instance of the SettingsPlugin class with the specified configuration.
@@ -20,10 +20,16 @@ namespace Plugins.Models
         /// <param name="configuration">The configuration to use for retrieving settings.</param>
         public SettingsPlugin(IConfiguration configuration)
         {
-            topic = Topic.Generic;
-            promptLength = 10;
-            ArgumentNullException.ThrowIfNull(configuration);
-            this.configuration = configuration;
+            _topic = Topic.Generic;
+            _promptLength = 10;
+            try
+            {
+                _configuration = configuration;
+            }
+            catch (ArgumentNullException)
+            {
+                throw new ArgumentException(nameof(configuration), "Configuration cannot be null!");
+            }
         }
 
         /// <summary>
@@ -35,7 +41,7 @@ namespace Plugins.Models
         [return: Description("Topic name")]
         public Topic GetTopic()
         {
-            return topic;
+            return _topic;
         }
 
         /// <summary>
@@ -46,7 +52,7 @@ namespace Plugins.Models
         [Description("Sets the topic name for the summary")]
         public void SetTopic(Topic newTopic)
         {
-            topic = newTopic;
+            _topic = newTopic;
         }
 
         /// <summary>
@@ -58,7 +64,7 @@ namespace Plugins.Models
         [return: Description("Output length")]
         public int GetPromptLength()
         {
-            return promptLength;
+            return _promptLength;
         }
 
         /// <summary>
@@ -69,7 +75,7 @@ namespace Plugins.Models
         [Description("Sets the maximum word count for the LLM to output for the summary")]
         public void SetPromptLength(int newPromptLength)
         {
-            promptLength = newPromptLength;
+            _promptLength = newPromptLength;
         }
 
         /// <summary>
@@ -81,19 +87,33 @@ namespace Plugins.Models
         public string GetSummaryPrompt()
         {
             string topicPath;
-            try
-            {
-                topicPath = Path.Combine(configuration["PromptsForTopics"], $"{GetTopic()}.txt");
-            }
-            catch (ArgumentNullException)
-            {
-                var promptsForTopicsPath = configuration["PromptsForTopics"];
-                throw new ArgumentNullException(nameof(promptsForTopicsPath), "Path for folder 'PromptsForTopics' cannot be empty!");
-            }
+            topicPath = GetTopicFilePath();
             string topicDescription = File.ReadAllText(topicPath);
             return $"Summarize the above text for the topic {GetTopic()} " +
                 $"in at most {GetPromptLength()} words.\n" +
                 $"Use the following description for the topic:\n{topicDescription}";
+        }
+
+        /// <summary>
+        /// Constructs and returns the file path for a topic based on the configuration settings.
+        /// </summary>
+        /// <returns>The file path for the topic.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when the configuration setting for 'PromptsForTopics' is null or empty.
+        /// </exception>
+        private string GetTopicFilePath()
+        {
+            string topicPath;
+            try
+            {
+                topicPath = Path.Combine(_configuration["PromptsForTopics"], $"{GetTopic()}.txt");
+            }
+            catch (ArgumentNullException)
+            {
+                var promptsForTopicsPath = _configuration["PromptsForTopics"];
+                throw new ArgumentNullException(nameof(promptsForTopicsPath), "Path for folder 'PromptsForTopics' cannot be empty!");
+            }
+            return topicPath;
         }
     }
 }

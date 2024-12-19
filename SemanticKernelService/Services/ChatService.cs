@@ -10,6 +10,8 @@ namespace SemanticKernelService.Services
     /// <summary>
     /// Provides chat-related services using the Semantic Kernel.
     /// </summary>
+    // TODO: Add try catch only where necessary
+
     public class ChatService : IChatService
     {
         private readonly Kernel _kernel;

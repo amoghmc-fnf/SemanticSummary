@@ -10,6 +10,7 @@ namespace SummaryWebApp.Services
     /// <summary>
     /// Provides chat services by interacting with an HTTP API.
     /// </summary>
+    // TODO: Add try catch only where necessary
     public class ChatService : IChatService
     {
         private readonly HttpClient _httpClient;

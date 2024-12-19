@@ -13,6 +13,7 @@ namespace SemanticKernelApi.Controllers
     /// <summary>
     /// Controller for handling chat-related operations.
     /// </summary>
+    // TODO: Add try catch for apis
     [Route("api/[controller]")]
     [ApiController]
     public class ChatController : ControllerBase, IChatController
