@@ -18,9 +18,10 @@ namespace SummaryWebApp.Services
         /// Initializes a new instance of the <see cref="TokenizerService"/> class.
         /// </summary>
         /// <param name="httpClient">The HTTP client to use for requests.</param>
+        /// <exception cref="ArgumentNullException">Thrown when the HTTP client is null.</exception>
         public TokenizerService(HttpClient httpClient)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient), "HTTP client cannot be null!");
         }
 
         /// <summary>
@@ -28,13 +29,26 @@ namespace SummaryWebApp.Services
         /// </summary>
         /// <param name="userInput">The input text to tokenize.</param>
         /// <returns>The number of tokens in the input text.</returns>
+        /// <exception cref="HttpRequestException">Thrown when the HTTP request fails.</exception>
+        /// <exception cref="FormatException">Thrown when the response cannot be parsed to an integer.</exception>
         public async Task<int> GetTokenCountAsync(string userInput)
         {
-            var response = await _httpClient.PostAsJsonAsync("Tokenizer/count", userInput);
-            response.EnsureSuccessStatusCode();
-            var parsedResponse = await response.Content.ReadAsStringAsync();
-            var result = int.Parse(parsedResponse);
-            return result;
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("Tokenizer/count", userInput);
+                response.EnsureSuccessStatusCode();
+                var parsedResponse = await response.Content.ReadAsStringAsync();
+                var result = int.Parse(parsedResponse);
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new HttpRequestException("An error occurred while getting the token count.", ex);
+            }
+            catch (FormatException ex)
+            {
+                throw new FormatException("An error occurred while parsing the token count.", ex);
+            }
         }
     }
 }
