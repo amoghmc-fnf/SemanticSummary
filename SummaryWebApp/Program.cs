@@ -26,14 +26,26 @@ namespace SummaryWebApp
                     .Build();
 
             // Add services
-            builder.Services.AddTransient(sp => new HttpClient
-            {
-                BaseAddress = new Uri(configuration.GetSection("ApiEndpoint").Value)
-            });
+            AddHttpClientService(builder, configuration);
             builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddScoped<ITokenizerService, TokenizerService>();
 
             await builder.Build().RunAsync();
+        }
+
+        /// <summary>
+        /// Adds the HTTP client service to the service collection.
+        /// </summary>
+        /// <param name="builder">The web assembly host builder.</param>
+        /// <param name="configuration">The configuration root.</param>
+        /// <exception cref="NullReferenceException">Thrown when the value of the key "ApiEndpoint" is null.</exception>
+        private static void AddHttpClientService(WebAssemblyHostBuilder builder, IConfiguration configuration)
+        {
+            var uri = configuration.GetSection("ApiEndpoint").Value ?? throw new NullReferenceException();
+            builder.Services.AddTransient(sp => new HttpClient
+            {
+                BaseAddress = new Uri(uri)
+            });
         }
     }
 }

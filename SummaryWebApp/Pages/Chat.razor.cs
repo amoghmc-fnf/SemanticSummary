@@ -13,12 +13,15 @@ namespace SummaryWebApp.Pages
         private int _inputTokenCount;
         private const int DefaultResponsesLimit = 3;
 
+        /// <summary>
+        /// Initializes a new instance of the Chat class. 
+        /// </summary>
         public Chat()
         {
             _outputLength = 20;
             _selectedTopic = Topic.Generic;
             _userMessage = string.Empty;
-            _messages = new();
+            _messages = [];
             _inputTokenCount = 0;
         }
 
@@ -31,7 +34,7 @@ namespace SummaryWebApp.Pages
         {
             if (changeEvent.Value is null)
             {
-                throw new ArgumentNullException(nameof(changeEvent.Value), "ChangeEventArgs cannot be null.");
+                throw new NullReferenceException("ChangeEventArgs cannot be null.");
             }
 
             // Update the user message and get the token count
@@ -60,7 +63,7 @@ namespace SummaryWebApp.Pages
                     {
                         UserText = _userMessage,
                         IsSent = false,
-                        Responses = new List<string> { response },
+                        Responses = [response],
                         Topic = _selectedTopic,
                         PromptLen = _outputLength
                     });

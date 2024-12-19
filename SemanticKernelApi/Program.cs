@@ -32,16 +32,7 @@ namespace SemanticKernelApi
             // Create a kernel with Azure OpenAI chat completion
             builder.Services.AddSingleton(sp =>
             {
-                var kernelBuilder = Kernel.CreateBuilder();
-                kernelBuilder.AddAzureOpenAIChatCompletion(
-                    config["DeploymentName"],
-                    config["Endpoint"],
-                    config["Key"]);
-
-                // Add the SettingsPlugin
-                var settings = new SettingsPlugin(config);
-                kernelBuilder.Plugins.AddFromObject(settings, pluginName: "Settings");
-
+                IKernelBuilder kernelBuilder = BuildKernelWithConfig(config);
                 return kernelBuilder.Build();
             });
 
@@ -49,9 +40,7 @@ namespace SemanticKernelApi
             builder.Services.AddSingleton<IConfiguration>(config);
 
             // Add API services
-            builder.Services.AddSingleton<IChatService, ChatService>();
-            builder.Services.AddSingleton<Tokenizer>(TiktokenTokenizer.CreateForModel(config["Model"]));
-            builder.Services.AddSingleton<ITokenizerService, TokenizerService>();
+            AddApiServices(builder, config);
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -72,6 +61,42 @@ namespace SemanticKernelApi
             app.UseAuthorization();
             app.MapControllers();
             app.Run();
+        }
+
+        /// <summary>
+        /// Adds API services to the service collection.
+        /// </summary>
+        /// <param name="builder">The web application builder.</param>
+        /// <param name="config">The configuration root.</param>
+        /// <exception cref="ArgumentNullException">Thrown when the configuration value is null.</exception>
+        private static void AddApiServices(WebApplicationBuilder builder, IConfigurationRoot config)
+        {
+            builder.Services.AddSingleton<IChatService, ChatService>();
+            var model = config["Model"] ?? throw new ArgumentNullException(nameof(config));
+            builder.Services.AddSingleton<Tokenizer>(TiktokenTokenizer.CreateForModel(model));
+            builder.Services.AddSingleton<ITokenizerService, TokenizerService>();
+        }
+
+        /// <summary>
+        /// Builds the kernel with the provided configuration.
+        /// </summary>
+        /// <param name="config">The configuration root.</param>
+        /// <returns>An instance of <see cref="IKernelBuilder"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when a required configuration value is null.</exception>
+        private static IKernelBuilder BuildKernelWithConfig(IConfigurationRoot config)
+        {
+            var kernelBuilder = Kernel.CreateBuilder();
+
+            var deploymentName = config["DeploymentName"] ?? throw new ArgumentNullException(nameof(config));
+            var endpoint = config["Endpoint"] ?? throw new ArgumentNullException(nameof(config));
+            var key = config["Key"] ?? throw new ArgumentNullException(nameof(config));
+
+            kernelBuilder.AddAzureOpenAIChatCompletion(deploymentName, endpoint, key);
+
+            // Add the SettingsPlugin
+            var settings = new SettingsPlugin(config);
+            kernelBuilder.Plugins.AddFromObject(settings, pluginName: "Settings");
+            return kernelBuilder;
         }
 
         /// <summary>
