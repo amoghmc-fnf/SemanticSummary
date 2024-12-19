@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.SemanticKernel;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Plugins.Models
 {
@@ -22,14 +21,7 @@ namespace Plugins.Models
         {
             _topic = Topic.Generic;
             _promptLength = 10;
-            try
-            {
-                _configuration = configuration;
-            }
-            catch (ArgumentNullException)
-            {
-                throw new ArgumentException(nameof(configuration), "Configuration cannot be null!");
-            }
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration), "Configuration cannot be null.");
         }
 
         /// <summary>
@@ -94,8 +86,6 @@ namespace Plugins.Models
                 $"Use the following description for the topic:\n{topicDescription}";
         }
 
-        /// <summary>
-        /// Constructs and returns the file path for a topic based on the configuration settings.
         /// </summary>
         /// <returns>The file path for the topic.</returns>
         /// <exception cref="ArgumentNullException">
@@ -103,17 +93,13 @@ namespace Plugins.Models
         /// </exception>
         private string GetTopicFilePath()
         {
-            string topicPath;
-            try
+            var promptsForTopicsPath = _configuration["PromptsForTopics"];
+            if (string.IsNullOrEmpty(promptsForTopicsPath))
             {
-                topicPath = Path.Combine(_configuration["PromptsForTopics"], $"{GetTopic()}.txt");
+                throw new NullReferenceException("Path for folder 'PromptsForTopics' cannot be empty!");
             }
-            catch (ArgumentNullException)
-            {
-                var promptsForTopicsPath = _configuration["PromptsForTopics"];
-                throw new ArgumentNullException(nameof(promptsForTopicsPath), "Path for folder 'PromptsForTopics' cannot be empty!");
-            }
-            return topicPath;
+
+            return Path.Combine(promptsForTopicsPath, $"{GetTopic()}.txt");
         }
     }
 }

@@ -34,11 +34,24 @@ namespace SemanticKernelApi.Controllers
         /// </summary>
         /// <param name="userInput">The user input to summarize.</param>
         /// <returns>An <see cref="IActionResult"/> containing the summary.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when the user input is null or empty.</exception>
         [HttpPost("summary")]
         public async Task<IActionResult> GetSummary([FromBody] string userInput)
         {
-            var result = await _chatService.GetSummary(userInput);
-            return Ok(result);
+            if (string.IsNullOrEmpty(userInput))
+            {
+                throw new ArgumentNullException(nameof(userInput), "User input cannot be null or empty.");
+            }
+
+            try
+            {
+                var result = await _chatService.GetSummary(userInput);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -46,11 +59,24 @@ namespace SemanticKernelApi.Controllers
         /// </summary>
         /// <param name="userInput">The user input to summarize again.</param>
         /// <returns>An <see cref="IActionResult"/> containing the regenerated summary.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when the user input is null or empty.</exception>
         [HttpPost("regenerate_summary")]
         public async Task<IActionResult> GetRegeneratedSummary([FromBody] string userInput)
         {
-            var result = await _chatService.GetRegeneratedSummary(userInput);
-            return Ok(result);
+            if (string.IsNullOrEmpty(userInput))
+            {
+                throw new ArgumentNullException(nameof(userInput), "User input cannot be null or empty.");
+            }
+
+            try
+            {
+                var result = await _chatService.GetRegeneratedSummary(userInput);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -60,8 +86,15 @@ namespace SemanticKernelApi.Controllers
         [HttpGet("settings/topic")]
         public async Task<IActionResult> GetTopic()
         {
-            var result = await _chatService.GetTopic();
-            return Ok(result);
+            try
+            {
+                var result = await _chatService.GetTopic();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -69,11 +102,19 @@ namespace SemanticKernelApi.Controllers
         /// </summary>
         /// <param name="newTopic">The new topic to set.</param>
         /// <returns>An <see cref="IActionResult"/> indicating the result of the operation.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when the new topic is null.</exception>
         [HttpPost("settings/topic")]
         public async Task<IActionResult> UpdateTopic([FromBody] Topic newTopic)
         {
-            await _chatService.UpdateTopic(newTopic);
-            return Ok("Topic updated successfully!");
+            try
+            {
+                await _chatService.UpdateTopic(newTopic);
+                return Ok("Topic updated successfully!");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -83,8 +124,15 @@ namespace SemanticKernelApi.Controllers
         [HttpGet("settings/promptLength")]
         public async Task<IActionResult> GetPromptLength()
         {
-            var result = await _chatService.GetPromptLength();
-            return Ok(result);
+            try
+            {
+                var result = await _chatService.GetPromptLength();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -92,11 +140,24 @@ namespace SemanticKernelApi.Controllers
         /// </summary>
         /// <param name="newPromptLength">The new prompt length to set.</param>
         /// <returns>An <see cref="IActionResult"/> indicating the result of the operation.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when the new prompt length is less than or equal to zero.</exception>
         [HttpPost("settings/promptLength")]
         public async Task<IActionResult> UpdatePromptLength([FromBody] int newPromptLength)
         {
-            await _chatService.UpdatePromptLength(newPromptLength);
-            return Ok("Prompt length updated successfully!");
+            if (newPromptLength <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(newPromptLength), "Prompt length must be greater than zero.");
+            }
+
+            try
+            {
+                await _chatService.UpdatePromptLength(newPromptLength);
+                return Ok("Prompt length updated successfully!");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -106,8 +167,15 @@ namespace SemanticKernelApi.Controllers
         [HttpGet("settings/summaryPrompt")]
         public async Task<IActionResult> GetSummaryPrompt()
         {
-            var result = await _chatService.GetSummaryPrompt();
-            return Ok(result);
+            try
+            {
+                var result = await _chatService.GetSummaryPrompt();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }

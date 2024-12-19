@@ -10,8 +10,6 @@ namespace SemanticKernelService.Services
     /// <summary>
     /// Provides chat-related services using the Semantic Kernel.
     /// </summary>
-    // TODO: Add try catch only where necessary
-
     public class ChatService : IChatService
     {
         private readonly Kernel _kernel;
@@ -26,13 +24,12 @@ namespace SemanticKernelService.Services
         /// </summary>
         /// <param name="kernel">The Semantic Kernel instance.</param>
         /// <param name="configuration">The configuration to use for retrieving settings.</param>
+        /// <exception cref="ArgumentNullException">Thrown when the kernel or configuration is null.</exception>
         public ChatService(Kernel kernel, IConfiguration configuration)
         {
-            ArgumentNullException.ThrowIfNull(nameof(kernel));
-            ArgumentNullException.ThrowIfNull(nameof(configuration));
-            _kernel = kernel;
+            _kernel = kernel ?? throw new ArgumentNullException(nameof(kernel), "Kernel cannot be null.");
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration), "Configuration cannot be null.");
             _history = new ChatHistory();
-            _configuration = configuration;
             InititializeSystemMessage();
             _chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
         }
@@ -40,18 +37,15 @@ namespace SemanticKernelService.Services
         /// <summary>
         /// Initializes the system message from the configuration.
         /// </summary>
+        /// <exception cref="NullReferenceException">Thrown when the system message path is null or empty.</exception>
         private void InititializeSystemMessage()
         {
-            string systemMessage;
-            try
+            var systemMessagePath = _configuration["SystemMessage"];
+            if (string.IsNullOrEmpty(systemMessagePath))
             {
-                systemMessage = File.ReadAllText(_configuration["SystemMessage"]);
+                throw new NullReferenceException("Path for file 'SystemMessage' cannot be empty.");
             }
-            catch (ArgumentNullException)
-            {
-                var systemMessagePath = _configuration["SystemMessage"];
-                throw new ArgumentNullException(nameof(systemMessagePath), "Path for file 'SystemMessage' cannot be empty!");
-            }
+            var systemMessage = File.ReadAllText(systemMessagePath);
             _history.AddSystemMessage(systemMessage);
         }
 
@@ -60,8 +54,14 @@ namespace SemanticKernelService.Services
         /// </summary>
         /// <param name="userInput">The user input to summarize.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the summary.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when the user input is null or empty.</exception>
         public async Task<string> GetSummary(string userInput)
         {
+            if (string.IsNullOrEmpty(userInput))
+            {
+                throw new ArgumentNullException(nameof(userInput), "User input cannot be null or empty.");
+            }
+
             return await GetResultForPrompt(userInput);
         }
 
@@ -70,8 +70,14 @@ namespace SemanticKernelService.Services
         /// </summary>
         /// <param name="userInput">The user input to summarize again.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the regenerated summary.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when the user input is null or empty.</exception>
         public async Task<string> GetRegeneratedSummary(string userInput)
         {
+            if (string.IsNullOrEmpty(userInput))
+            {
+                throw new ArgumentNullException(nameof(userInput), "User input cannot be null or empty.");
+            }
+
             _history.AddUserMessage("Regenerate summary for below user prompt: \n");
             return await GetResultForPrompt(userInput, temperature);
         }
@@ -82,6 +88,7 @@ namespace SemanticKernelService.Services
         /// <param name="userInput">The user input to process.</param>
         /// <param name="temperature">The temperature setting for the prompt execution.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the result for the prompt.</returns>
+        /// <exception cref="NullReferenceException">Thrown when the response content is null.</exception>
         private async Task<string> GetResultForPrompt(string userInput, float temperature = 0)
         {
             _history.AddUserMessage(userInput);
@@ -149,8 +156,14 @@ namespace SemanticKernelService.Services
         /// </summary>
         /// <param name="newPromptLength">The new prompt length to set.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when the new prompt length is less than or equal to zero.</exception>
         public async Task UpdatePromptLength(int newPromptLength)
         {
+            if (newPromptLength <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(newPromptLength), "Prompt length must be greater than zero.");
+            }
+
             var setLength = _kernel.Plugins.GetFunction(settingsPluginName, "set_length");
             var setLengthArgs = new KernelArguments
             {

@@ -13,15 +13,16 @@ namespace SemanticKernelService.Services
     /// </summary>
     public class TokenizerService : ITokenizerService
     {
-        private Tokenizer _tokenizer;
+        private readonly Tokenizer _tokenizer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TokenizerService"/> class.
         /// </summary>
         /// <param name="tokenizer">The tokenizer to use.</param>
+        /// <exception cref="ArgumentNullException">Thrown when the tokenizer is null.</exception>
         public TokenizerService(Tokenizer tokenizer)
         {
-            _tokenizer = tokenizer;
+            _tokenizer = tokenizer ?? throw new ArgumentNullException(nameof(tokenizer), "Tokenizer cannot be null!");
         }
 
         /// <summary>
@@ -32,7 +33,7 @@ namespace SemanticKernelService.Services
         public async Task<string> GetTokenCount(string userInput)
         {
             var result = _tokenizer.CountTokens(userInput);
-            return result.ToString();
+            return await Task.FromResult(result.ToString());
         }
     }
 }

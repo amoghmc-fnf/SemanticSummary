@@ -31,8 +31,15 @@ namespace SemanticKernelApi.Controllers
         [HttpPost("count")]
         public async Task<IActionResult> GetTokenCount([FromBody] string userInput)
         {
-            var result = await _tokenizerService.GetTokenCount(userInput);
-            return Ok(result);
+            try
+            {
+                var result = await _tokenizerService.GetTokenCount(userInput);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }
