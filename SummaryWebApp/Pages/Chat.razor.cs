@@ -6,86 +6,130 @@ namespace SummaryWebApp.Pages
 {
     public partial class Chat
     {
-        private int outputLen;
-        private string userMessage;
-        private List<Message> messages;
-        private Topic topicSelect;
-        private int inputTokenCount;
-        private const int defaultOutputLen = 20;
-        private const int defaultResponsesLimit = 3;
+        private int _outputLength;
+        private string _userMessage;
+        private List<Message> _messages;
+        private Topic _selectedTopic;
+        private int _inputTokenCount;
+        private const int DefaultResponsesLimit = 3;
 
-        /// <summary>
-        /// Initializes the chat component.
-        /// </summary>
-        protected override async Task OnInitializedAsync()
+        public Chat()
         {
-            userMessage = String.Empty;
-            messages = [];
-            outputLen = defaultOutputLen;
+            _outputLength = 20;
+            _selectedTopic = Topic.Generic;
+            _userMessage = string.Empty;
+            _messages = new();
+            _inputTokenCount = 0;
         }
 
         /// <summary>
         /// This method gives the live count of the tokens used by the input message.
         /// </summary>
         /// <param name="changeEvent">The change in input message length.</param>
-        private async void GetLiveCount(ChangeEventArgs changeEvent)
+        /// <exception cref="ArgumentNullException">Thrown when the change event value is null.</exception>
+        private async Task GetLiveCountAsync(ChangeEventArgs changeEvent)
         {
-            try
+            if (changeEvent.Value is null)
             {
-                // TODO: check exceptions for both ArgumentNUll and NullReference in private method
-                userMessage = changeEvent.Value.ToString();
+                throw new ArgumentNullException(nameof(changeEvent.Value), "ChangeEventArgs cannot be null.");
             }
-            catch (Exception)
-            {
 
-                throw new NullReferenceException("Change in input text box cannot be null!");
-            }
-            inputTokenCount = await tokenizerService.GetTokenCountAsync(userMessage);
+            // Update the user message and get the token count
+            _userMessage = changeEvent.Value.ToString() ?? string.Empty;
+            _inputTokenCount = await TokenizerService.GetTokenCountAsync(_userMessage);
             StateHasChanged();
         }
 
         /// <summary>
         /// Sends the user's message and processes the response.
         /// </summary>
-        private async void SendMessage()
+        /// <exception cref="InvalidOperationException">Thrown when an error occurs while sending the message.</exception>
+        private async Task SendMessageAsync()
         {
-            if (!string.IsNullOrWhiteSpace(userMessage))
+            try
             {
-                await chatService.UpdateTopicAsync(topicSelect);
-                await chatService.UpdatePromptLengthAsync(outputLen);
-                var response = await chatService.GetSummaryAsync(userMessage);
-                messages.Add(new Message { UserText = userMessage, IsSent = true });
-                messages.Add(new Message
+                if (!string.IsNullOrWhiteSpace(_userMessage))
                 {
-                    UserText = userMessage,
-                    IsSent = false,
-                    Responses = [response],
-                    Topic = topicSelect,
-                    PromptLen = outputLen
-                });
-                userMessage = string.Empty; // Clear the input after sending
-                topicSelect = await chatService.GetTopicAsync();
-                outputLen = await chatService.GetPromptLengthAsync();
-                inputTokenCount = 0;
-                StateHasChanged();
+                    // Update the summary settings and get the response
+                    await UpdateSummarySettings(_selectedTopic, _outputLength);
+                    var response = await ChatService.GetSummaryAsync(_userMessage);
+
+                    // Add the user message and response to the messages list
+                    _messages.Add(new Message { UserText = _userMessage, IsSent = true });
+                    _messages.Add(new Message
+                    {
+                        UserText = _userMessage,
+                        IsSent = false,
+                        Responses = new List<string> { response },
+                        Topic = _selectedTopic,
+                        PromptLen = _outputLength
+                    });
+
+                    // Get the updated summary settings and reset the input message
+                    await GetSummarySettings();
+                    ResetInputMessage();
+                    StateHasChanged();
+                }
             }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("An error occurred while sending the message.", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets the current summary settings.
+        /// </summary>
+        private async Task GetSummarySettings()
+        {
+            _selectedTopic = await ChatService.GetTopicAsync();
+            _outputLength = await ChatService.GetPromptLengthAsync();
+        }
+
+        /// <summary>
+        /// Updates the summary settings with the new topic and output length.
+        /// </summary>
+        /// <param name="newTopic">The new topic to set.</param>
+        /// <param name="newOutputLength">The new output length to set.</param>
+        private async Task UpdateSummarySettings(Topic newTopic, int newOutputLength)
+        {
+            await ChatService.UpdateTopicAsync(newTopic);
+            await ChatService.UpdatePromptLengthAsync(newOutputLength);
+        }
+
+        /// <summary>
+        /// Resets the input message and token count.
+        /// </summary>
+        private void ResetInputMessage()
+        {
+            _userMessage = string.Empty; // Clear the input after sending
+            _inputTokenCount = 0;
         }
 
         /// <summary>
         /// Regenerates the last message's response if the number of responses is below the default limit.
         /// </summary>
         /// <param name="message">The message to regenerate the response for.</param>
-        private async void RegenerateLastMessage(Message message)
+        /// <exception cref="InvalidOperationException">Thrown when an error occurs while regenerating the message.</exception>
+        private async Task RegenerateLastMessageAsync(Message message)
         {
-            if (message.Responses.Count < defaultResponsesLimit)
+            try
             {
-                await chatService.UpdateTopicAsync(message.Topic);
-                await chatService.UpdatePromptLengthAsync(message.PromptLen);
-                var response = await chatService.GetRegeneratedSummaryAsync(message.UserText);
+                if (message.Responses.Count < DefaultResponsesLimit)
+                {
+                    // Update the summary settings and get the regenerated response
+                    await UpdateSummarySettings(message.Topic, message.PromptLen);
+                    var response = await ChatService.GetRegeneratedSummaryAsync(message.UserText);
 
-                message.Responses.Add(response);
-                message.CurrIndex += 1;
-                StateHasChanged();
+                    // Add the regenerated response to the message
+                    message.Responses.Add(response);
+                    message.CurrIndex++;
+                    StateHasChanged();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("An error occurred while regenerating the message.", ex);
             }
         }
 
