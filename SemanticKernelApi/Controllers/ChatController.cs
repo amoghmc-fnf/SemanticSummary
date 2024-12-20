@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
@@ -18,14 +19,18 @@ namespace SemanticKernelApi.Controllers
     public class ChatController : ControllerBase, IChatController
     {
         private readonly IChatService _chatService;
+        private readonly ILogger<ChatController> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChatController"/> class.
         /// </summary>
         /// <param name="service">The chat service to use.</param>
-        public ChatController(IChatService service)
+        /// <param name="logger">The logger to use for logging.</param>
+        public ChatController(IChatService service, ILogger<ChatController> logger)
         {
             _chatService = service;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger), "Logger cannot be null.");
+            _logger.LogInformation("ChatController initialized.");
         }
 
         /// <summary>
@@ -39,16 +44,19 @@ namespace SemanticKernelApi.Controllers
         {
             if (string.IsNullOrEmpty(userInput))
             {
+                _logger.LogError("User input cannot be null or empty.");
                 throw new ArgumentNullException(nameof(userInput), "User input cannot be null or empty.");
             }
 
             try
             {
+                _logger.LogInformation("Generating summary for user input.");
                 var result = await _chatService.GetSummary(userInput);
                 return Ok(result);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error generating summary.");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -64,16 +72,19 @@ namespace SemanticKernelApi.Controllers
         {
             if (string.IsNullOrEmpty(userInput))
             {
+                _logger.LogError("User input cannot be null or empty.");
                 throw new ArgumentNullException(nameof(userInput), "User input cannot be null or empty.");
             }
 
             try
             {
+                _logger.LogInformation("Regenerating summary for user input.");
                 var result = await _chatService.GetRegeneratedSummary(userInput);
                 return Ok(result);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error regenerating summary.");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -87,11 +98,13 @@ namespace SemanticKernelApi.Controllers
         {
             try
             {
+                _logger.LogInformation("Getting current topic.");
                 var result = await _chatService.GetTopic();
                 return Ok(result);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error getting current topic.");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -107,11 +120,13 @@ namespace SemanticKernelApi.Controllers
         {
             try
             {
+                _logger.LogInformation("Updating topic to {NewTopic}", newTopic);
                 await _chatService.UpdateTopic(newTopic);
                 return Ok("Topic updated successfully!");
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error updating topic.");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -125,11 +140,13 @@ namespace SemanticKernelApi.Controllers
         {
             try
             {
+                _logger.LogInformation("Getting current prompt length.");
                 var result = await _chatService.GetPromptLength();
                 return Ok(result);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error getting current prompt length.");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -145,16 +162,19 @@ namespace SemanticKernelApi.Controllers
         {
             if (newPromptLength <= 0)
             {
+                _logger.LogError("Prompt length must be greater than zero.");
                 throw new ArgumentOutOfRangeException(nameof(newPromptLength), "Prompt length must be greater than zero.");
             }
 
             try
             {
+                _logger.LogInformation("Updating prompt length to {NewPromptLength}", newPromptLength);
                 await _chatService.UpdatePromptLength(newPromptLength);
                 return Ok("Prompt length updated successfully!");
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error updating prompt length.");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -168,11 +188,13 @@ namespace SemanticKernelApi.Controllers
         {
             try
             {
+                _logger.LogInformation("Getting summary prompt.");
                 var result = await _chatService.GetSummaryPrompt();
                 return Ok(result);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error getting summary prompt.");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }

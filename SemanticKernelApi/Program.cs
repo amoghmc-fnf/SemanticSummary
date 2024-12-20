@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Microsoft.ML.Tokenizers;
 using Microsoft.SemanticKernel;
 using Plugins.Models;
@@ -21,7 +22,7 @@ namespace SemanticKernelApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Add Cors policy
             ConfigureCors(builder);
 
             IConfigurationRoot config = new ConfigurationBuilder()
@@ -29,10 +30,14 @@ namespace SemanticKernelApi
                 .AddUserSecrets<Program>()
                 .Build();
 
+            // Configure logging
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+
             // Create a kernel with Azure OpenAI chat completion
             builder.Services.AddSingleton(sp =>
             {
-                IKernelBuilder kernelBuilder = BuildKernelWithConfig(config);
+                IKernelBuilder kernelBuilder = BuildKernelWithConfig(config, sp.GetRequiredService<ILogger<SettingsPlugin>>());
                 return kernelBuilder.Build();
             });
 
@@ -81,9 +86,10 @@ namespace SemanticKernelApi
         /// Builds the kernel with the provided configuration.
         /// </summary>
         /// <param name="config">The configuration root.</param>
+        /// <param name="logger">The logger to use for logging.</param>
         /// <returns>An instance of <see cref="IKernelBuilder"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when a required configuration value is null.</exception>
-        private static IKernelBuilder BuildKernelWithConfig(IConfigurationRoot config)
+        private static IKernelBuilder BuildKernelWithConfig(IConfigurationRoot config, ILogger<SettingsPlugin> logger)
         {
             var kernelBuilder = Kernel.CreateBuilder();
 
@@ -94,7 +100,7 @@ namespace SemanticKernelApi
             kernelBuilder.AddAzureOpenAIChatCompletion(deploymentName, endpoint, key);
 
             // Add the SettingsPlugin
-            var settings = new SettingsPlugin(config);
+            var settings = new SettingsPlugin(config, logger);
             kernelBuilder.Plugins.AddFromObject(settings, pluginName: "Settings");
             return kernelBuilder;
         }
