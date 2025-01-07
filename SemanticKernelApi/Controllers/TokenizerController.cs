@@ -37,7 +37,7 @@ namespace SemanticKernelApi.Controllers
         {
             try
             {
-                ArgumentNullException.ThrowIfNullOrEmpty(userInput);
+                ArgumentNullException.ThrowIfNull(userInput);
                 var result = await _tokenizerService.GetTokenCount(userInput).ConfigureAwait(false);
                 return Ok(result);
             }
