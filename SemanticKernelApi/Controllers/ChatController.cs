@@ -42,22 +42,21 @@ namespace SemanticKernelApi.Controllers
         [HttpPost("summary")]
         public async Task<IActionResult> GetSummary([FromBody] string userInput)
         {
-            if (string.IsNullOrEmpty(userInput))
-            {
-                _logger.LogError("User input cannot be null or empty.");
-                throw new ArgumentNullException(nameof(userInput), "User input cannot be null or empty.");
-            }
-
             try
             {
-                _logger.LogInformation("Generating summary for user input.");
-                var result = await _chatService.GetSummary(userInput);
+                ArgumentException.ThrowIfNullOrEmpty(userInput);
+                var result = await _chatService.GetSummary(userInput).ConfigureAwait(false);
                 return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error generating summary.");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 

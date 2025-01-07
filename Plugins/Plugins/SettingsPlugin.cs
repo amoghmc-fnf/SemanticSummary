@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
+using Plugins.Models;
 using System.ComponentModel;
 
-namespace Plugins.Models
+namespace Plugins.Plugins
 {
     /// <summary>
     /// The SettingsPlugin class implements the ISettingsPlugin interface and provides methods to manage settings related to topic and prompt length.
@@ -24,8 +25,8 @@ namespace Plugins.Models
         {
             _topic = Topic.Generic;
             _promptLength = 10;
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration), "Configuration cannot be null.");
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger), "Logger cannot be null.");
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _logger.LogInformation("SettingsPlugin initialized with topic {Topic} and prompt length {PromptLength}", _topic, _promptLength);
         }
 
@@ -104,12 +105,7 @@ namespace Plugins.Models
         private string GetTopicFilePath()
         {
             _logger.LogInformation("GetTopicFilePath called");
-            var promptsForTopicsPath = _configuration["PromptsForTopics"];
-            if (string.IsNullOrEmpty(promptsForTopicsPath))
-            {
-                _logger.LogError("Path for folder 'PromptsForTopics' cannot be empty!");
-                throw new NullReferenceException("Path for folder 'PromptsForTopics' cannot be empty!");
-            }
+            var promptsForTopicsPath = _configuration["PromptsForTopics"] ?? throw new NullReferenceException();
             return Path.Combine(promptsForTopicsPath, $"{GetTopic()}.txt");
         }
     }

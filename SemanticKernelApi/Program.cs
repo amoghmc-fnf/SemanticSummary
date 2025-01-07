@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.ML.Tokenizers;
 using Microsoft.SemanticKernel;
-using Plugins.Models;
+using Plugins.Plugins;
 using SemanticKernelService.Contracts;
 using SemanticKernelService.Services;
 
