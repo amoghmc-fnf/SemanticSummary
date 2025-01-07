@@ -24,8 +24,7 @@ namespace SemanticKernelApi.Controllers
         public TokenizerController(ITokenizerService service, ILogger<TokenizerController> logger)
         {
             _tokenizerService = service;
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger), "Logger cannot be null.");
-            _logger.LogInformation("TokenizerController initialized.");
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -36,23 +35,16 @@ namespace SemanticKernelApi.Controllers
         [HttpPost("count")]
         public async Task<IActionResult> GetTokenCount([FromBody] string userInput)
         {
-            if (string.IsNullOrEmpty(userInput))
-            {
-                _logger.LogError("User input cannot be null or empty.");
-                return BadRequest("User input cannot be null or empty.");
-            }
-
             try
             {
-                _logger.LogInformation("Tokenizing user input.");
-                var result = await _tokenizerService.GetTokenCount(userInput);
-                _logger.LogInformation("Token count for input: {TokenCount}", result);
+                ArgumentNullException.ThrowIfNullOrEmpty(userInput);
+                var result = await _tokenizerService.GetTokenCount(userInput).ConfigureAwait(false);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error tokenizing user input.");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
     }

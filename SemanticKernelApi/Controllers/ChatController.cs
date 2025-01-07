@@ -48,11 +48,6 @@ namespace SemanticKernelApi.Controllers
                 var result = await _chatService.GetSummary(userInput).ConfigureAwait(false);
                 return Ok(result);
             }
-            catch (ArgumentException ex)
-            {
-                _logger.LogError(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
@@ -78,7 +73,7 @@ namespace SemanticKernelApi.Controllers
             try
             {
                 _logger.LogInformation("Regenerating summary for user input.");
-                var result = await _chatService.GetRegeneratedSummary(userInput);
+                var result = await _chatService.GetRegeneratedSummary(userInput).ConfigureAwait(false);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -98,7 +93,7 @@ namespace SemanticKernelApi.Controllers
             try
             {
                 _logger.LogInformation("Getting current topic.");
-                var result = await _chatService.GetTopic();
+                var result = await _chatService.GetTopic().ConfigureAwait(false);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -120,7 +115,7 @@ namespace SemanticKernelApi.Controllers
             try
             {
                 _logger.LogInformation("Updating topic to {NewTopic}", newTopic);
-                await _chatService.UpdateTopic(newTopic);
+                await _chatService.UpdateTopic(newTopic).ConfigureAwait(false);
                 return Ok("Topic updated successfully!");
             }
             catch (Exception ex)
@@ -140,7 +135,7 @@ namespace SemanticKernelApi.Controllers
             try
             {
                 _logger.LogInformation("Getting current prompt length.");
-                var result = await _chatService.GetPromptLength();
+                var result = await _chatService.GetPromptLength().ConfigureAwait(false);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -168,7 +163,7 @@ namespace SemanticKernelApi.Controllers
             try
             {
                 _logger.LogInformation("Updating prompt length to {NewPromptLength}", newPromptLength);
-                await _chatService.UpdatePromptLength(newPromptLength);
+                await _chatService.UpdatePromptLength(newPromptLength).ConfigureAwait(false);
                 return Ok("Prompt length updated successfully!");
             }
             catch (Exception ex)
@@ -188,7 +183,7 @@ namespace SemanticKernelApi.Controllers
             try
             {
                 _logger.LogInformation("Getting summary prompt.");
-                var result = await _chatService.GetSummaryPrompt();
+                var result = await _chatService.GetSummaryPrompt().ConfigureAwait(false);
                 return Ok(result);
             }
             catch (Exception ex)
