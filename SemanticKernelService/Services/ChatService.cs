@@ -56,7 +56,7 @@ namespace SemanticKernelService.Services
         public async Task<string> GetSummary(string userInput)
         {
             ArgumentException.ThrowIfNullOrEmpty(userInput);
-            return await GetResultForPrompt(userInput);
+            return await GetResultForPrompt(userInput).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace SemanticKernelService.Services
         {
             ArgumentException.ThrowIfNullOrEmpty(userInput);
             _history.AddUserMessage("Regenerate summary for below user prompt: \n");
-            return await GetResultForPrompt(userInput, temperature);
+            return await GetResultForPrompt(userInput, temperature).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace SemanticKernelService.Services
             var result = await _chatCompletionService.GetChatMessageContentAsync(
                 _history,
                 executionSettings: openAIPromptExecutionSettings,
-                kernel: _kernel);
+                kernel: _kernel).ConfigureAwait(false);
 
             _history.AddMessage(result.Role, result.Content ?? throw new NullReferenceException());
             return result.Content;
@@ -105,7 +105,7 @@ namespace SemanticKernelService.Services
         public async Task<string> GetTopic()
         {
             var getTopic = _kernel.Plugins.GetFunction(settingsPluginName, "get_topic");
-            var topic = await _kernel.InvokeAsync(getTopic);
+            var topic = await _kernel.InvokeAsync(getTopic).ConfigureAwait(false);
             var result = topic.ToString();
             return result;
         }
@@ -122,7 +122,7 @@ namespace SemanticKernelService.Services
             {
                 { "newTopic", newTopic }
             };
-            await _kernel.InvokeAsync(setTopic, setTopicArgs);
+            await _kernel.InvokeAsync(setTopic, setTopicArgs).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace SemanticKernelService.Services
         public async Task<string> GetPromptLength()
         {
             var getLength = _kernel.Plugins.GetFunction(settingsPluginName, "get_length");
-            var length = await _kernel.InvokeAsync(getLength);
+            var length = await _kernel.InvokeAsync(getLength).ConfigureAwait(false);
             var result = length.ToString();
             return result;
         }
@@ -151,7 +151,7 @@ namespace SemanticKernelService.Services
             {
                 { "newPromptLength", newPromptLength }
             };
-            await _kernel.InvokeAsync(setLength, setLengthArgs);
+            await _kernel.InvokeAsync(setLength, setLengthArgs).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace SemanticKernelService.Services
         public async Task<string> GetSummaryPrompt()
         {
             var getSummaryPrompt = _kernel.Plugins.GetFunction(settingsPluginName, "get_summary_prompt");
-            var summaryPrompt = await _kernel.InvokeAsync(getSummaryPrompt);
+            var summaryPrompt = await _kernel.InvokeAsync(getSummaryPrompt).ConfigureAwait(false);
             var result = summaryPrompt.ToString();
             return result;
         }

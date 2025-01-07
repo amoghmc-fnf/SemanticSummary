@@ -21,7 +21,7 @@ namespace SummaryWebApp.Services
         /// <exception cref="ArgumentNullException">Thrown when the HTTP client is null.</exception>
         public TokenizerService(HttpClient httpClient)
         {
-            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient), "HTTP client cannot be null!");
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
         /// <summary>
@@ -43,11 +43,11 @@ namespace SummaryWebApp.Services
             }
             catch (HttpRequestException ex)
             {
-                throw new HttpRequestException("An error occurred while getting the token count.", ex);
+                throw new HttpRequestException(ex.Message);
             }
             catch (FormatException ex)
             {
-                throw new FormatException("An error occurred while parsing the token count.", ex);
+                throw new FormatException(ex.Message);
             }
         }
     }

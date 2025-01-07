@@ -21,7 +21,7 @@ namespace SummaryWebApp.Services
         /// <exception cref="ArgumentNullException">Thrown when the HTTP client is null.</exception>
         public ChatService(HttpClient httpClient)
         {
-            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient), "HTTP client cannot be null!");
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace SummaryWebApp.Services
             }
             catch (HttpRequestException ex)
             {
-                throw new HttpRequestException("An error occurred while getting the summary.", ex);
+                throw new HttpRequestException(ex.Message);
             }
         }
 
@@ -60,7 +60,7 @@ namespace SummaryWebApp.Services
             }
             catch (HttpRequestException ex)
             {
-                throw new HttpRequestException("An error occurred while regenerating the summary.", ex);
+                throw new HttpRequestException(ex.Message);
             }
         }
 
@@ -80,11 +80,11 @@ namespace SummaryWebApp.Services
             }
             catch (HttpRequestException ex)
             {
-                throw new HttpRequestException("An error occurred while getting the topic.", ex);
+                throw new HttpRequestException(ex.Message);
             }
             catch (ArgumentException ex)
             {
-                throw new ArgumentException("An error occurred while parsing the topic.", ex);
+                throw new ArgumentException(ex.Message);
             }
         }
 
@@ -103,7 +103,7 @@ namespace SummaryWebApp.Services
             }
             catch (HttpRequestException ex)
             {
-                throw new HttpRequestException("An error occurred while updating the topic.", ex);
+                throw new HttpRequestException(ex.Message);
             }
         }
 
@@ -123,11 +123,11 @@ namespace SummaryWebApp.Services
             }
             catch (HttpRequestException ex)
             {
-                throw new HttpRequestException("An error occurred while getting the prompt length.", ex);
+                throw new HttpRequestException(ex.Message);
             }
             catch (FormatException ex)
             {
-                throw new FormatException("An error occurred while parsing the prompt length.", ex);
+                throw new FormatException(ex.Message);
             }
         }
 
@@ -146,7 +146,7 @@ namespace SummaryWebApp.Services
             }
             catch (HttpRequestException ex)
             {
-                throw new HttpRequestException("An error occurred while updating the prompt length.", ex);
+                throw new HttpRequestException(ex.Message);
             }
         }
     }

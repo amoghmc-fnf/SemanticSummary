@@ -29,8 +29,7 @@ namespace SemanticKernelApi.Controllers
         public ChatController(IChatService service, ILogger<ChatController> logger)
         {
             _chatService = service;
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger), "Logger cannot be null.");
-            _logger.LogInformation("ChatController initialized.");
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -64,22 +63,16 @@ namespace SemanticKernelApi.Controllers
         [HttpPost("regenerate_summary")]
         public async Task<IActionResult> GetRegeneratedSummary([FromBody] string userInput)
         {
-            if (string.IsNullOrEmpty(userInput))
-            {
-                _logger.LogError("User input cannot be null or empty.");
-                throw new ArgumentNullException(nameof(userInput), "User input cannot be null or empty.");
-            }
-
             try
             {
-                _logger.LogInformation("Regenerating summary for user input.");
+                ArgumentException.ThrowIfNullOrEmpty(userInput);
                 var result = await _chatService.GetRegeneratedSummary(userInput).ConfigureAwait(false);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error regenerating summary.");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -92,14 +85,13 @@ namespace SemanticKernelApi.Controllers
         {
             try
             {
-                _logger.LogInformation("Getting current topic.");
                 var result = await _chatService.GetTopic().ConfigureAwait(false);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting current topic.");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -114,14 +106,13 @@ namespace SemanticKernelApi.Controllers
         {
             try
             {
-                _logger.LogInformation("Updating topic to {NewTopic}", newTopic);
                 await _chatService.UpdateTopic(newTopic).ConfigureAwait(false);
                 return Ok("Topic updated successfully!");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error updating topic.");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -134,14 +125,13 @@ namespace SemanticKernelApi.Controllers
         {
             try
             {
-                _logger.LogInformation("Getting current prompt length.");
                 var result = await _chatService.GetPromptLength().ConfigureAwait(false);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting current prompt length.");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -154,22 +144,16 @@ namespace SemanticKernelApi.Controllers
         [HttpPost("settings/promptLength")]
         public async Task<IActionResult> UpdatePromptLength([FromBody] int newPromptLength)
         {
-            if (newPromptLength <= 0)
-            {
-                _logger.LogError("Prompt length must be greater than zero.");
-                throw new ArgumentOutOfRangeException(nameof(newPromptLength), "Prompt length must be greater than zero.");
-            }
-
             try
             {
-                _logger.LogInformation("Updating prompt length to {NewPromptLength}", newPromptLength);
+                ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(newPromptLength, 0);
                 await _chatService.UpdatePromptLength(newPromptLength).ConfigureAwait(false);
                 return Ok("Prompt length updated successfully!");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error updating prompt length.");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -182,14 +166,13 @@ namespace SemanticKernelApi.Controllers
         {
             try
             {
-                _logger.LogInformation("Getting summary prompt.");
                 var result = await _chatService.GetSummaryPrompt().ConfigureAwait(false);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting summary prompt.");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
     }
