@@ -17,7 +17,6 @@ namespace SemanticKernelService.Services
         private readonly ChatHistory _history;
         private readonly IChatCompletionService _chatCompletionService;
         private readonly IConfiguration _configuration;
-        private readonly ILogger<ChatService> _logger;
         private const string settingsPluginName = "Settings";
         private const float temperature = (float)0.5;
 
@@ -28,15 +27,13 @@ namespace SemanticKernelService.Services
         /// <param name="configuration">The configuration to use for retrieving settings.</param>
         /// <param name="logger">The logger to use for logging.</param>
         /// <exception cref="ArgumentNullException">Thrown when the kernel or configuration is null.</exception>
-        public ChatService(Kernel kernel, IConfiguration configuration, ILogger<ChatService> logger)
+        public ChatService(Kernel kernel, IConfiguration configuration)
         {
-            _kernel = kernel ?? throw new ArgumentNullException(nameof(kernel), "Kernel cannot be null.");
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration), "Configuration cannot be null.");
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger), "Logger cannot be null.");
+            _kernel = kernel ?? throw new ArgumentNullException(nameof(kernel));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _history = new ChatHistory();
             InititializeSystemMessage();
             _chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
-            _logger.LogInformation("ChatService initialized.");
         }
 
         /// <summary>
@@ -45,15 +42,9 @@ namespace SemanticKernelService.Services
         /// <exception cref="NullReferenceException">Thrown when the system message path is null or empty.</exception>
         private void InititializeSystemMessage()
         {
-            var systemMessagePath = _configuration["SystemMessage"];
-            if (string.IsNullOrEmpty(systemMessagePath))
-            {
-                _logger.LogError("Path for file 'SystemMessage' cannot be empty.");
-                throw new NullReferenceException("Path for file 'SystemMessage' cannot be empty.");
-            }
+            var systemMessagePath = _configuration["SystemMessage"] ?? throw new NullReferenceException();
             var systemMessage = File.ReadAllText(systemMessagePath);
             _history.AddSystemMessage(systemMessage);
-            _logger.LogInformation("System message initialized.");
         }
 
         /// <summary>
@@ -64,14 +55,8 @@ namespace SemanticKernelService.Services
         /// <exception cref="ArgumentNullException">Thrown when the user input is null or empty.</exception>
         public async Task<string> GetSummary(string userInput)
         {
-            if (string.IsNullOrEmpty(userInput))
-            {
-                _logger.LogError("User input cannot be null or empty.");
-                throw new ArgumentNullException(nameof(userInput), "User input cannot be null or empty.");
-            }
-
-            _logger.LogInformation("Generating summary for user input.");
-            return await GetResultForPrompt(userInput);
+            ArgumentException.ThrowIfNullOrEmpty(userInput);
+            return await GetResultForPrompt(userInput).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -82,15 +67,9 @@ namespace SemanticKernelService.Services
         /// <exception cref="ArgumentNullException">Thrown when the user input is null or empty.</exception>
         public async Task<string> GetRegeneratedSummary(string userInput)
         {
-            if (string.IsNullOrEmpty(userInput))
-            {
-                _logger.LogError("User input cannot be null or empty.");
-                throw new ArgumentNullException(nameof(userInput), "User input cannot be null or empty.");
-            }
-
+            ArgumentException.ThrowIfNullOrEmpty(userInput);
             _history.AddUserMessage("Regenerate summary for below user prompt: \n");
-            _logger.LogInformation("Regenerating summary for user input.");
-            return await GetResultForPrompt(userInput, temperature);
+            return await GetResultForPrompt(userInput, temperature).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -113,15 +92,9 @@ namespace SemanticKernelService.Services
             var result = await _chatCompletionService.GetChatMessageContentAsync(
                 _history,
                 executionSettings: openAIPromptExecutionSettings,
-                kernel: _kernel);
+                kernel: _kernel).ConfigureAwait(false);
 
-            _history.AddMessage(result.Role, result.Content ?? string.Empty);
-            if (result.Content is null)
-            {
-                _logger.LogError("Response cannot be null!");
-                throw new NullReferenceException("Response cannot be null!");
-            }
-            _logger.LogInformation("Generated result for prompt.");
+            _history.AddMessage(result.Role, result.Content ?? throw new NullReferenceException());
             return result.Content;
         }
 
@@ -131,11 +104,9 @@ namespace SemanticKernelService.Services
         /// <returns>A task that represents the asynchronous operation. The task result contains the current topic.</returns>
         public async Task<string> GetTopic()
         {
-            _logger.LogInformation("Getting current topic.");
             var getTopic = _kernel.Plugins.GetFunction(settingsPluginName, "get_topic");
-            var topic = await _kernel.InvokeAsync(getTopic);
+            var topic = await _kernel.InvokeAsync(getTopic).ConfigureAwait(false);
             var result = topic.ToString();
-            _logger.LogInformation("Current topic: {Topic}", result);
             return result;
         }
 
@@ -146,13 +117,12 @@ namespace SemanticKernelService.Services
         /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task UpdateTopic(Topic newTopic)
         {
-            _logger.LogInformation("Updating topic to {NewTopic}", newTopic);
             var setTopic = _kernel.Plugins.GetFunction(settingsPluginName, "set_topic");
             var setTopicArgs = new KernelArguments
             {
                 { "newTopic", newTopic }
             };
-            await _kernel.InvokeAsync(setTopic, setTopicArgs);
+            await _kernel.InvokeAsync(setTopic, setTopicArgs).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -161,11 +131,9 @@ namespace SemanticKernelService.Services
         /// <returns>A task that represents the asynchronous operation. The task result contains the current prompt length.</returns>
         public async Task<string> GetPromptLength()
         {
-            _logger.LogInformation("Getting current prompt length.");
             var getLength = _kernel.Plugins.GetFunction(settingsPluginName, "get_length");
-            var length = await _kernel.InvokeAsync(getLength);
+            var length = await _kernel.InvokeAsync(getLength).ConfigureAwait(false);
             var result = length.ToString();
-            _logger.LogInformation("Current prompt length: {PromptLength}", result);
             return result;
         }
 
@@ -177,19 +145,13 @@ namespace SemanticKernelService.Services
         /// <exception cref="ArgumentOutOfRangeException">Thrown when the new prompt length is less than or equal to zero.</exception>
         public async Task UpdatePromptLength(int newPromptLength)
         {
-            if (newPromptLength <= 0)
-            {
-                _logger.LogError("Prompt length must be greater than zero.");
-                throw new ArgumentOutOfRangeException(nameof(newPromptLength), "Prompt length must be greater than zero.");
-            }
-
-            _logger.LogInformation("Updating prompt length to {NewPromptLength}", newPromptLength);
+            ArgumentOutOfRangeException.ThrowIfLessThan(newPromptLength, 0);
             var setLength = _kernel.Plugins.GetFunction(settingsPluginName, "set_length");
             var setLengthArgs = new KernelArguments
             {
                 { "newPromptLength", newPromptLength }
             };
-            await _kernel.InvokeAsync(setLength, setLengthArgs);
+            await _kernel.InvokeAsync(setLength, setLengthArgs).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -198,11 +160,9 @@ namespace SemanticKernelService.Services
         /// <returns>A task that represents the asynchronous operation. The task result contains the summary prompt.</returns>
         public async Task<string> GetSummaryPrompt()
         {
-            _logger.LogInformation("Getting summary prompt.");
             var getSummaryPrompt = _kernel.Plugins.GetFunction(settingsPluginName, "get_summary_prompt");
-            var summaryPrompt = await _kernel.InvokeAsync(getSummaryPrompt);
+            var summaryPrompt = await _kernel.InvokeAsync(getSummaryPrompt).ConfigureAwait(false);
             var result = summaryPrompt.ToString();
-            _logger.LogInformation("Summary prompt: {SummaryPrompt}", result);
             return result;
         }
     }

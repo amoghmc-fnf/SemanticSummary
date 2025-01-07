@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
+using Plugins.Models;
 using System.ComponentModel;
 
-namespace Plugins.Models
+namespace Plugins.Plugins
 {
     /// <summary>
     /// The SettingsPlugin class implements the ISettingsPlugin interface and provides methods to manage settings related to topic and prompt length.
@@ -13,20 +14,17 @@ namespace Plugins.Models
         private Topic _topic;
         private int _promptLength;
         private readonly IConfiguration _configuration;
-        private readonly ILogger<SettingsPlugin> _logger;
 
         /// <summary>
         /// Initializes a new instance of the SettingsPlugin class with the specified configuration and logger.
         /// </summary>
         /// <param name="configuration">The configuration to use for retrieving settings.</param>
         /// <param name="logger">The logger to use for logging.</param>
-        public SettingsPlugin(IConfiguration configuration, ILogger<SettingsPlugin> logger)
+        public SettingsPlugin(IConfiguration configuration)
         {
             _topic = Topic.Generic;
             _promptLength = 10;
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration), "Configuration cannot be null.");
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger), "Logger cannot be null.");
-            _logger.LogInformation("SettingsPlugin initialized with topic {Topic} and prompt length {PromptLength}", _topic, _promptLength);
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         /// <summary>
@@ -38,7 +36,6 @@ namespace Plugins.Models
         [return: Description("Topic name")]
         public Topic GetTopic()
         {
-            _logger.LogInformation("GetTopic called, returning {Topic}", _topic);
             return _topic;
         }
 
@@ -50,7 +47,6 @@ namespace Plugins.Models
         [Description("Sets the topic name for the summary")]
         public void SetTopic(Topic newTopic)
         {
-            _logger.LogInformation("SetTopic called, changing topic from {OldTopic} to {NewTopic}", _topic, newTopic);
             _topic = newTopic;
         }
 
@@ -63,7 +59,6 @@ namespace Plugins.Models
         [return: Description("Output length")]
         public int GetPromptLength()
         {
-            _logger.LogInformation("GetPromptLength called, returning {PromptLength}", _promptLength);
             return _promptLength;
         }
 
@@ -75,7 +70,6 @@ namespace Plugins.Models
         [Description("Sets the maximum word count for the LLM to output for the summary")]
         public void SetPromptLength(int newPromptLength)
         {
-            _logger.LogInformation("SetPromptLength called, changing prompt length from {OldPromptLength} to {NewPromptLength}", _promptLength, newPromptLength);
             _promptLength = newPromptLength;
         }
 
@@ -87,7 +81,6 @@ namespace Plugins.Models
         [Description("Gets the prompt for summary using the latest updated settings for the topic name and prompt length")]
         public string GetSummaryPrompt()
         {
-            _logger.LogInformation("GetSummaryPrompt called");
             string topicPath = GetTopicFilePath();
             string topicDescription = File.ReadAllText(topicPath);
             return $"Summarize the above text for the topic {GetTopic()} in at most {GetPromptLength()} words.\n" +
@@ -103,13 +96,7 @@ namespace Plugins.Models
         /// </exception>
         private string GetTopicFilePath()
         {
-            _logger.LogInformation("GetTopicFilePath called");
-            var promptsForTopicsPath = _configuration["PromptsForTopics"];
-            if (string.IsNullOrEmpty(promptsForTopicsPath))
-            {
-                _logger.LogError("Path for folder 'PromptsForTopics' cannot be empty!");
-                throw new NullReferenceException("Path for folder 'PromptsForTopics' cannot be empty!");
-            }
+            var promptsForTopicsPath = _configuration["PromptsForTopics"] ?? throw new NullReferenceException();
             return Path.Combine(promptsForTopicsPath, $"{GetTopic()}.txt");
         }
     }
