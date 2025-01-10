@@ -78,13 +78,9 @@ namespace SummaryWebApp.Services
                 var result = (Topic)Enum.Parse(typeof(Topic), response);
                 return result;
             }
-            catch (HttpRequestException ex)
+            catch (Exception ex)
             {
-                throw new HttpRequestException(ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                throw new ArgumentException(ex.Message);
+                throw new Exception(ex.Message);
             }
         }
 
@@ -121,13 +117,9 @@ namespace SummaryWebApp.Services
                 var result = int.Parse(response);
                 return result;
             }
-            catch (HttpRequestException ex)
+            catch (Exception ex)
             {
-                throw new HttpRequestException(ex.Message);
-            }
-            catch (FormatException ex)
-            {
-                throw new FormatException(ex.Message);
+                throw new Exception(ex.Message);
             }
         }
 
