@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.ML.Tokenizers;
-using SemanticKernelApi.Contracts;
 using SemanticKernelService.Contracts;
 
 namespace SemanticKernelApi.Controllers
@@ -11,7 +10,7 @@ namespace SemanticKernelApi.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class TokenizerController : ControllerBase, ITokenizerController
+    public class TokenizerController : ControllerBase
     {
         private readonly ITokenizerService _tokenizerService;
         private readonly ILogger<TokenizerController> _logger;

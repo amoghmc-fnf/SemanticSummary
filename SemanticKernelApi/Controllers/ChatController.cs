@@ -5,7 +5,6 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System;
 using System.Text.Json;
-using SemanticKernelApi.Contracts;
 using SemanticKernelService.Contracts;
 using Plugins.Models;
 
@@ -16,7 +15,7 @@ namespace SemanticKernelApi.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class ChatController : ControllerBase, IChatController
+    public class ChatController : ControllerBase
     {
         private readonly IChatService _chatService;
         private readonly ILogger<ChatController> _logger;
